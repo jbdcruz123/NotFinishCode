@@ -1,0 +1,29 @@
+#linear algo 
+#ang list a ay dapat ay series pa taas. kung bababa
+#tataas value ng list ay hindi makikita ng prog
+def f(a, i):
+      sb_lf = 0
+      sb_rg = len(a)-1
+      sb_m = sb_lf + int( ( sb_rg- sb_lf) /2)
+      while 1:
+            lf = sb_lf
+            rg = sb_rg
+            m = sb_m
+            print(f"L10 lf {lf}, m {m}, rg {rg}, i {i}\>
+            if i < a[m]:
+                  sb_m = lf + int( (m- lf) /2)
+                  sb_rg  = m-1
+            elif i > a[m]:
+                  sb_m = rg-  int( (rg- m) /2)
+                  sb_lf = m+1
+            else:
+                  print(f"NAKITA: {i}")
+                  break
+            if rg <= lf:
+                  print(f"no find {i}")
+                  break
+a =[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20]
+print(a)
+print(f"input:  ", end= "")
+i= int( input())
+f(a,i)
