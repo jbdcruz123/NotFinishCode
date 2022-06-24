@@ -1,0 +1,38 @@
+#test.py
+#using OS Ubuntu 20.04.4 LTS
+#version of python3 im using Python 3.8.10
+
+import tkinter as tk
+from tkinter import ttk
+from tkinter.messagebox import showinfo
+from PIL import Image, ImageTk
+
+# root window
+root = tk.Tk()
+root.geometry('300x200')
+root.resizable(False, False)
+root.title('Image Button Demo')
+
+
+# download button
+def download_clicked():
+      showinfo( title='Information', message='Download button clicked!')
+
+image = Image.open("a.jpg")
+photo = ImageTk.PhotoImage(image)
+
+download_icon = tk.PhotoImage(file=photo)
+download_button = ttk.Button(root, image=download_icon, command=download_clicked)
+download_button.pack( ipadx=5, ipady=5, expand=True)
+root.mainloop()
+
+#########
+#error message
+#Traceback (most recent call last):
+#  File "test.py", line 24, in <module>
+#    download_icon = tk.PhotoImage(file=photo)
+#  File "/usr/lib/python3.8/tkinter/__init__.py", line 4064, in __init__
+#    Image.__init__(self, 'photo', name, cnf, master, **kw)
+#  File "/usr/lib/python3.8/tkinter/__init__.py", line 4009, in __init__
+#    self.tk.call(('image', 'create', imgtype, name,) + options)
+#_tkinter.TclError: couldn't open "pyimage1": no such file or directory
