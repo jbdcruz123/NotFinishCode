@@ -1,0 +1,39 @@
+import tkinter as tk
+import threading
+import time
+
+load_child = 0
+def thread_function(name):#1A
+      global load_child
+      i=0
+      while i < 3:#2
+
+            time.sleep(1)
+            print(f"sec {i+1}")
+            i+=1
+      #2
+      
+      
+      if load_child: #3
+            child = tk.Toplevel()
+            child.title("child window already load")
+            child.geometry(f"{300}x{250}")
+            child.resizable(False, False)
+            load_child = 0
+      #3 
+#1A
+
+thread_1 = threading.Thread(target= thread_function, args=(1,), daemon = True)
+thread_1.start()
+
+main = tk.Tk()
+
+main.title("load child window first")
+main.geometry(f"{400}x{300}")
+main.resizable(False, False)
+load_child =1
+
+main.mainloop()
+print(f"L10 \n")
+
+
