@@ -1,0 +1,51 @@
+import tkinter 
+
+class main(tkinter.Tk): #1
+
+      def __init__(self):#2
+            super().__init__()
+            self.title("Main window")
+            self.geometry("400x300")
+            self.resizable(False, False)
+            tkinter.Label(self, text = "This is the main").pack()
+      #2
+
+      def f_load_child(self):#2
+            #delay 100milisec para pag na call ang
+            #mainloop() ay maihahabol ung child            
+            self.after(100, self.f_init_child)
+      #2
+      
+      def f_init_child(self):#2
+            self.childs= child()
+      #2
+      def f_load_main(self):#2
+            self.mainloop()
+      #2
+      
+#1
+
+
+class child(tkinter.Toplevel): #1
+      def __init__(self):#2
+            #ang buong setting ng child
+            super().__init__()
+            
+            self.title("child")
+            self.geometry("350x250")
+            self.resizable(False, False)
+            self.frame = tkinter.Frame(self) 
+            tkinter.Label(self.frame, text = "input:").grid(row=1, column = 1)
+            tkinter.Entry(self.frame, ).grid(row=1, column = 2)
+            tkinter.Button(self.frame, text = "ok").grid(row=2, column = 1)
+            tkinter.Button(self.frame, text = "stop").grid(row=2, column = 2)
+            self.frame.place(relx = .5, rely = .5, anchor= tkinter.CENTER)
+      #2
+#1
+
+#sa main_function
+a = main() 
+a.f_load_child()
+a.f_load_main()
+
+
