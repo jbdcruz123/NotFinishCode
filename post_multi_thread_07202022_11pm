@@ -1,0 +1,234 @@
+
+import sys
+from PyQt5.QtCore import *
+from PyQt5.QtWidgets import *
+import threading
+import time
+
+def _close_event(event): #1
+      global glo_break
+      global glo_ind
+      global glo_stop
+
+      
+      #pwersahin na isara ang tuloy()
+      glo_break = True
+
+      i = 0       
+      
+      while i < 3:#4
+
+            print(f"L52 i {i}, glo_calle {glo_calle} \n")
+           
+            #glo_calle malalaman dito kung sino ung active na tuloy_event index
+            # ang index ay 0 to 2
+            if glo_calle[i] :#5
+            
+                  print(f"L53  glo_ind {glo_ind}, glo_stop { glo_stop }\n")
+                  
+                  #dadaan ang glo_stop sa tuloy_event para isara ang flag 
+                  # alarm nito ung glo_break para mag sara ito
+                  j = 0
+                  while not glo_stop[i] :#7     
+                        
+                        #OBSERVATION KO NAG STOP PATI UNG CALL NG tuloy_event kaya
+                        #hindi nag sara ung glo_stop
+                        #dapat sana maiwasan maicall ung widget item_prin[name]
+                        #dahilan lumalabas ito RuntimeError: wrapped C/C++ object of type QLabel has been deleted
+                        
+
+                        #disable ko debuger na output kasi alang tigil ang print
+                        #print(f"L54  glo_ind {glo_ind}, glo_break  { glo_break} ,  glo_stop { glo_stop }\n")                       
+                        
+                        #input()
+                        #infi loop unit True flag, the glo_stop
+                  
+                        #para may gagawin lang ang iteration
+                        j=1
+                  #7
+                  
+                  print(f"L55 \n")
+                   
+            #5     
+      
+            i +=1 
+      #4
+
+      print(f"L50 \n")
+
+#1
+
+def tuloy_event(): #2
+      global glo_break
+      global glo_ind
+      global glo_stop
+
+      print(f"L20 ")
+      
+      name = glo_ind
+
+      count =0
+      while True: #3
+
+            i =0
+            while i< 1000000:#2
+
+                  """
+                  if glo_break: #4
+                        print(f"L21 \n")
+                        glo_stop[name] = True
+                        break
+                  #4            
+                  """
+                
+                  #loop to delay in sec
+                  i+=1
+            #2
+
+            #print(f"L21 glo_break { glo_break}, name {name}\n")
+            
+
+            #glo_break ay maging True sa 
+            if glo_break: #4
+                  print(f"L22 \n")
+                  glo_stop[name] = True
+                  
+                  break
+            #4
+
+            item_prin[name].setText(f"func {name},  count{count+1} ")
+            count +=1
+
+            
+
+      #3
+      
+
+#2
+
+def numb_fail(p): #1
+
+      try : #2
+      
+            p = int(p)
+            
+            return p
+
+      except: #2
+            return -1
+      #2
+
+
+
+#1
+
+def calle_func(p):#1
+      global glo_calle
+                  
+
+      if glo_calle[p]: #2
+            return False
+      #2
+
+      return True
+#1
+
+def butt_1_click(): #1
+      global glo_ind
+      global glo_calle
+
+      _text, ok_press = QInputDialog.getText(wind, "Get text","maginput ka ng index 0,1,2\nna call na func \nnag crash pag umilit ung na call:", QLineEdit.Normal, "")
+
+      #n = int(_text)
+
+      n = numb_fail(_text)
+
+      print(f"L10 n {n} \n")
+
+      if ok_press and ( n >=0 and n <=2 ): #2
+            
+            if not calle_func(n): #3
+                  print("L11a already called\n")
+                  return 0
+            #3
+
+            print(f"L11 \n")
+           
+            #open ang index 0 to 2 para sa tuloy_event
+            #glo_calle array of flag pang trace kung nabuksan na ang isang index function
+            glo_ind = n
+            glo_calle[glo_ind] = True
+            thre_arr[ n].start()
+
+            #disable ko join kasi nag hahang
+            #thre_arr[ n ].join()
+            QMessageBox.information(wind, "Message", f" ang na icall na thread_func ay {_text} ")
+      #2      
+
+
+#1
+
+glo_ind = 0
+glo_break = False
+glo_stop= list([False, False, False])
+glo_calle= list([False, False, False])
+
+
+thre_arr = list( [] )
+
+apps = QApplication(sys.argv)
+
+wind = QWidget()
+
+wind.setWindowTitle("A multi thread test")
+wind.top = 100
+wind.left = 100
+wind.width = 400
+wind.heigth = 300
+
+wind.setGeometry(wind.top, wind.left, wind.width, wind.heigth )
+
+item_prin = list([])
+
+labe_1 = QLabel(wind, text = "hindi pa na simulan 0")
+labe_1.resize(200,30)
+labe_1.move(10, 1)
+item_prin.append(labe_1)
+
+
+labe_2 = QLabel(wind, text = "hindi pa na simulan 1")
+labe_2.resize(200,30)
+labe_2.move(10, 50)
+item_prin.append(labe_2)
+
+labe_3 = QLabel(wind, text = "hindi pa na simulan 2")
+labe_3.resize(200,30)
+labe_3.move(10, 100)
+item_prin.append(labe_3)
+
+
+butt_1 = QPushButton(wind, text ="press to triger thread")
+butt_1.resize(200, 30)
+butt_1.move(10, 150)
+ 
+
+wind.closeEvent = lambda event: _close_event(event)
+
+
+i=0
+while i < 3: #2
+      
+      #thre_arr.append( threading.Thread(target = tuloy, args = (1, ), daemon = True) )
+      thre_arr.append( threading.Thread(target = tuloy_event , daemon = True ) )
+
+      i+=1
+#2
+
+print(f"L40 item_prin {item_prin},\nthre_arr {thre_arr}\n")
+
+
+butt_1.clicked.connect(butt_1_click)
+wind.show()
+
+apps.exec()
+sys.exit()
