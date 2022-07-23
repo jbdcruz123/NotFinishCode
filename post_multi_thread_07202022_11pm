@@ -1,17 +1,19 @@
 
+#reference of error ko
+#https://stackoverflow.com/questions/17914960/pyqt-runtimeerror-wrapped-c-c-object-has-been-deleted
+
 import sys
 from PyQt5.QtCore import *
 from PyQt5.QtWidgets import *
 import threading
 import time
 
-def _close_event(event): #1
+def forc_clos():#1
       global glo_break
       global glo_ind
       global glo_stop
 
-      
-      #pwersahin na isara ang tuloy()
+      #pwersahin na isara ang tuloy_event()
       glo_break = True
 
       i = 0       
@@ -23,6 +25,7 @@ def _close_event(event): #1
             #glo_calle malalaman dito kung sino ung active na tuloy_event index
             # ang index ay 0 to 2
             if glo_calle[i] :#5
+                  glo_calle[i] = False
             
                   print(f"L53  glo_ind {glo_ind}, glo_stop { glo_stop }\n")
                   
@@ -55,6 +58,58 @@ def _close_event(event): #1
       #4
 
       print(f"L50 \n")
+      
+      wind.destroy()
+      apps.exit()
+     
+
+#1
+
+#message of closing
+def Messa_clos():#1
+
+      retu = QMessageBox.information(wind, "Message", "sigurado kong e-exit na Y/ N", QMessageBox.Yes  | QMessageBox.No, QMessageBox.Yes)
+
+      if retu == QMessageBox.Yes: #2
+            return True
+      #2
+
+      return False
+#1
+
+#called by system close
+def _close_event(event): #1
+     
+      event.ignore()
+      
+      print("L62 \n")
+
+      clos_appl = threading.Thread(target = clos_even_thre , daemon = True )    
+      clos_appl.start()
+#1
+
+#thread for final close
+def clos_even_thre(): #1
+      global glo_break
+      global glo_ind
+      global glo_stop
+
+      #start timer      
+      i = 0 
+
+      while i < 1000000: #2
+
+            i+=1
+      #2
+      
+      if not Messa_clos() : #3
+            
+            print(f"L70 \n")
+            return            
+      #3
+
+      #forcing to close
+      forc_clos()      
 
 #1
 
@@ -91,6 +146,7 @@ def tuloy_event(): #2
             #glo_break ay maging True sa 
             if glo_break: #4
                   print(f"L22 \n")
+                  
                   glo_stop[name] = True
                   
                   break
@@ -168,6 +224,23 @@ def butt_1_click(): #1
 
 #1
 
+
+def butt_2_click(): #1
+
+      if not Messa_clos() : #3
+            
+            print(f"L81 \n")
+            return            
+      #3
+
+      forc_clos()  
+
+      #wind.destroy()
+      #apps.quit()
+      #stand by
+      #pass
+#1
+
 glo_ind = 0
 glo_break = False
 glo_stop= list([False, False, False])
@@ -210,6 +283,12 @@ item_prin.append(labe_3)
 butt_1 = QPushButton(wind, text ="press to triger thread")
 butt_1.resize(200, 30)
 butt_1.move(10, 150)
+
+
+butt_2 = QPushButton(wind, text ="stop thread")
+butt_2.resize(200, 30)
+butt_2.move(10, 200)
+ 
  
 
 wind.closeEvent = lambda event: _close_event(event)
@@ -228,7 +307,15 @@ print(f"L40 item_prin {item_prin},\nthre_arr {thre_arr}\n")
 
 
 butt_1.clicked.connect(butt_1_click)
+
+butt_2.clicked.connect(butt_2_click)
 wind.show()
 
 apps.exec()
+
+print("L30 before exit()")
 sys.exit()
+
+
+
+
