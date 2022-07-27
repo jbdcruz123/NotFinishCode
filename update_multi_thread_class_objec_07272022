@@ -1,0 +1,290 @@
+
+#RSM 7/27/2022 get other idea from a member of fb python phil
+#i coated my main object with class object and get an inherit from QWidget
+#debuger ko ung L1 to up na numbers sa print
+
+
+#reference of error ko
+#https://stackoverflow.com/questions/17914960/pyqt-runtimeerror-wrapped-c-c-object-has-been-deleted
+
+#reference of QWidget
+#  https://doc.qt.io/qtforpython-5/PySide2/QtWidgets/QWidget.html#PySide2.QtWidgets.PySide2.QtWidgets.QWidget.parentWidget
+
+import sys
+
+from PyQt5.QtWidgets import *
+import threading
+import time
+
+class wind(QWidget):#1
+
+      def __init__(self, parent= None):#2
+
+            QWidget.__init__(self, parent)
+            self.setWindowTitle("A multi thread test")
+          
+            self.top = 100
+            self.left = 100
+            self.width = 400
+            self.heigth = 300
+            self.setGeometry(self.top, self.left, self.width, self.heigth )
+            self.labe_1 = QLabel(self, text = "hindi pa na simulan 0")
+            self.labe_1.resize(200,30)
+            self.labe_1.move(10, 1)
+            item_prin.append(self.labe_1)
+
+            self.labe_2 = QLabel(self, text = "hindi pa na simulan 1")
+            self.labe_2.resize(200,30)
+            self.labe_2.move(10, 50)
+            item_prin.append(self.labe_2)
+
+            self.labe_3 = QLabel(self, text = "hindi pa na simulan 2")
+            self.labe_3.resize(200,30)
+            self.labe_3.move(10, 100)
+            item_prin.append(self.labe_3)
+
+
+            butt_1 = QPushButton(self, text ="press to triger thread")
+            butt_1.resize(200, 30)
+            butt_1.move(10, 150)
+
+
+            butt_2 = QPushButton(self, text ="stop thread and exit")
+            butt_2.resize(200, 30)
+            butt_2.move(10, 200)
+            
+            butt_1.clicked.connect(self.butt_1_click)
+
+            butt_2.clicked.connect(self.butt_2_click)
+
+            self.acti_thre()
+
+      #2
+
+      #insert object apps to control on exiting wind obje
+      def inse_apps(self, p): #1
+            self.apps = p
+      #1
+      
+      #activate threads
+      def acti_thre(self):#3
+
+            i=0
+            while i < 3: #2
+      
+                  #thre_arr.append( threading.Thread(target = tuloy, args = (1, ), daemon = True) )
+                  thre_arr.append( threading.Thread(target = self.tuloy_event, args = (i, ) , daemon = True ) )
+
+                  i+=1
+            #2
+
+
+      #3
+      
+      #start the active thread
+      def butt_1_click(self): #1
+         
+            global glo_calle
+
+            _text, ok_press = QInputDialog.getText(self, "Get text","maginput ka ng index 0,1,2\nna call na func \nnag crash pag umilit ung na call:", QLineEdit.Normal, "")
+
+            #n = int(_text)
+
+            n = self.numb_fail(_text)
+
+            print(f"L10 n {n} \n")
+
+            if ok_press and ( n >=0 and n <=2 ): #2
+                  
+                  if self.calle_func(n): #3
+                        print("L11a already called\n")
+                        return 0
+                  #3
+
+                  print(f"L11 \n")
+                 
+                  #open ang index 0 to 2 para sa tuloy_event
+                  #glo_calle array of flag pang trace kung nabuksan na ang isang index function
+            
+                  glo_calle[n] = True
+                  thre_arr[ n].start()
+                
+                  QMessageBox.information(self, "Message", f" ang na icall na thread_func ay {_text} ")
+            #2      
+
+
+      #1
+
+      #close_program on button exit 
+      def butt_2_click(self): #1
+
+            if not self.Messa_clos() : #3
+                  
+                  print(f"L81 \n")
+                  return            
+            #3
+
+            self.forc_clos()  
+            self.destroy()       
+            self.apps.quit()
+          
+      #1
+
+      #called by system close
+      def closeEvent(self, event): #1
+           
+            if not self.Messa_clos() : #3
+                  
+                  print(f"L62 \n")
+                  event.ignore()
+                  return            
+            #3
+
+
+            self.forc_clos()
+            event.accept()
+            print("L63 \n")
+
+           
+      #1
+
+      #process called function 
+      def calle_func(self, p):#1
+            global glo_calle
+                        
+            if glo_calle[p]: #2
+                  return True
+            #2
+
+            return False
+      #1
+
+      #number fail process for error input numbers
+      def numb_fail(self, p): #1
+
+            try : #2
+
+                  p = int(p)
+                  return p
+
+            except: #2
+                  return -1
+            #2
+
+      #1
+
+      def tuloy_event(self, para): #2
+           
+            global glo_break
+
+            print(f"L20 ")
+
+            ind = para
+
+            count =0
+            while True: #3
+
+                  i =0
+                  while i< 1000000:#2
+                     
+                        #loop to delay in sec
+                        i+=1
+                  #2
+
+                  #print(f"L21 glo_break { glo_break}, name {name}\n")
+
+                  #glo_break ay maging True sa 
+                  if glo_break: #4
+
+                        print(f"L22 \n")                                                                       
+                        break
+                  #4
+
+                  item_prin[ind].setText(f"func {ind},  count {count+1} ")
+                  count +=1
+
+            #3
+
+      #2
+
+      #message of closing
+      def Messa_clos(self):#1
+
+            #L70
+            retu = QMessageBox.information( self, "Message", "sigurado kong e-exit na Y/ N", QMessageBox.Yes  | QMessageBox.No, QMessageBox.Yes)
+
+            if retu == QMessageBox.Yes: #2
+                  return True
+            #2
+
+            return False
+      #1
+
+            
+      def forc_clos(self):#1
+            global glo_break
+           
+            #pwersahin na isara ang tuloy_event()
+            glo_break = True
+
+            i = 0       
+            
+            while i < 3:#4
+
+                  print(f"L52 i {i}, glo_calle {glo_calle} \n")
+                 
+                  #glo_calle malalaman dito kung sino ung active na tuloy_event index
+                  # ang index ay 0 to 2
+                  if glo_calle[i] :#5
+
+                        glo_calle[i] = False
+                        thre_arr[i].join()
+                       
+                        print(f"L55 \n")
+                         
+                  #5     
+            
+                  i +=1 
+            #4
+
+            item_prin.clear()
+            thre_arr.clear()
+            glo_calle.clear()
+            
+            print(f"L50 all object deleted\n")
+           
+            #wind.destroy()
+           
+            #del wind
+            #apps.exit()
+           
+
+      #1
+
+
+#1
+
+#global variables
+glo_break = False
+
+item_prin = list([])
+thre_arr = list( [] )
+glo_calle= list([False, False, False])
+
+apps = QApplication(sys.argv)
+
+obje_wind = wind()
+
+#input apps para macontrol ung terminate sa loob ng class wind
+obje_wind.inse_apps(apps)
+
+obje_wind.show()
+
+apps.exec()
+
+print("L30 before exit()")
+sys.exit()
+
+
+
+
