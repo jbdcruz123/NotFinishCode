@@ -159,7 +159,7 @@ class paren(QWidget):#1
             while i < n: #4
 
                   _item = self.list_view.item(i)
-                  _item.setFlags(Qt.ItemIsEnabled)
+                  _item.setFlags(Qt.ItemIsEnabled | Qt.ItemIsSelectable)
                   i+=1
             #4
 
