@@ -1,0 +1,1325 @@
+#!/usr/bin/env python3
+
+#RSM dialogBox with simple not recorded database
+#hindi ko pa natangal ang debuger printout, under testing palng ito
+
+import sys
+
+from PyQt5.QtCore import Qt
+from PyQt5.QtWidgets import *
+from PyQt5  import QtGui, QtCore
+
+
+MAX_DATA_ARRAY = 6
+      #L280
+class paren(QWidget): #1
+
+      
+      _widge = list([None for i in range(0, MAX_DATA_ARRAY)])
+      _data_array = list(["" for i in range(0, MAX_DATA_ARRAY)] for j in range(0,3))
+      butto = [None] * 9 # create 6 slots
+
+      #total max length ng _data_array      
+      lengt = 0
+
+      #ang index ng mga textbox, process must be less 1 because of 
+      #the array real index count 0 to up
+      _drive_next = None
+
+      #gamit ng add button nag rerepresent kung anung button
+      statu = None
+
+      #swichter disable
+      disab = 0
+
+      #control ng text box pag pindot ng enter lilipat ng susnod na textbox      
+      def keyPressEvent(self, _event)  :#2
+            #L360 
+            print(f"L361 {_event.key()= }, {_event.text()= }\n")
+      #2
+
+      def keyReleaseEvent(self, _event): #2
+            #L370
+            print(f"L371 {_event.key()= }, {_event.text()= }\n")
+
+      #2
+
+      #handler to close
+      def closeEvent(self, event) :#2
+            #L320 
+            print(f"L321 \n")
+
+            if self.f_messa_close() == QMessageBox.No:#3
+
+                 event.ignore()
+            #3
+
+      #2
+
+      #parameter line_edit ay sasalinan ng isang list ng
+      #paren._widge
+      def f_copy_widge(self, set_widge):#2
+            #L230 
+
+            #self.widge ay isasalin ng isa-isa sa 
+            #line_edit function
+            i = 0 
+            while i < MAX_DATA_ARRAY:#3
+
+                  print(f"L231 {i= }, {set_widge= } \n")
+                  set_widge.f_input_widge(self._widge[i])
+                  i+=1
+            #3
+
+            f_debug_410(f"debug_230 {set_widge._name= }", set_widge._widge)
+
+      #2
+
+      def f_initi_data(self): #2
+
+            #L70 
+
+            blank = ["","date","names","5", "1","0"]
+            for i in range(0, 3): #3
+                  
+                  _text = ""
+                  for j in range(0, len(self._data_array[i]) ): #4
+                  
+                        if j== 3 or j== 4 :#5
+
+                              self._data_array[i][j] = blank[j] 
+                             
+                        elif j ==5:#5.2  
+
+                              self._data_array[i][j] = "%0.2f"%( float(self._data_array[i][3]) * float(self._data_array[i][4]) )
+                               
+                        elif j ==0 :#5.4
+
+                              self._data_array[i][j] = str(i + 1) 
+                             
+                        else: #5.3
+
+                              self._data_array[i][j] = blank[j] + " " + str(i + 1)                             
+                        #5.3
+
+                        
+                  #4
+                  
+                  self.front.insertItem(i, _text)
+                  self.lengt+=1
+            #3
+            
+            print( f"L74 {self.front.setCurrentRow(0)= } \n ")
+
+            #input the first index in QLineEdit
+            for i in range(0, len(self._data_array[0])): #5
+
+                  self._widge[i].setText(self._data_array[0][i])
+
+            #5
+            
+            self._drive_next =1
+            self.lengt_label.setText( str(self._drive_next) )
+
+            print(f"L75 {self._drive_next= }, {self.lengt= }, {self._data_array= }")
+      #2
+
+      def __init__(self): #2
+
+            #L10 
+            QWidget.__init__(self)
+            self.setWindowTitle("test of layout")
+            self.setFixedSize(800,400)
+
+            self.f_layou()
+
+            print(f"L10 self._data_array {self._data_array} \n")
+
+      #2
+
+      def f_layou(self): #2
+
+            #L20 
+
+            self.front = list_widge(self)
+            self.front.f_add_objec(self)
+          
+            self.front.clicked.connect(self.f_click_front)            
+
+            self.lengt_label = QLabel(self, text="")
+            self.lengt_title = QLabel(self, text="count")
+
+            self.lengt_qhbox  = QHBoxLayout()
+            self.lengt_qhbox.addWidget(self.lengt_title,1)            
+            self.lengt_qhbox.addWidget(self.lengt_label,3)
+            
+            self.front_layou = QVBoxLayout()
+            self.front_layou.addWidget(self.front)
+            self.front_layou.addLayout(self.lengt_qhbox)
+
+            #self.front_layou.addWidget(self.lengt_label)            
+
+            self.lengt_label.setText(str(self.lengt))
+            self.lengt_label.setStyleSheet("border: 1px solid blue;")
+
+            #make it front
+            self.front_layou.setAlignment(Qt.AlignHCenter | Qt.AlignTop)     
+          
+            self.id =  line_edit(self, 0, "id")  
+            self.date =  line_edit(self, 1, "date")          
+            self.produ_name =  line_edit(self, 2, "produ_name")            
+            
+
+            self._widge[0] = self.id    
+            
+            print(f"L20 self.id.text() {self.id.text()  }\n")
+            self._widge[1] = self.date                            
+            self._widge[2] = self.produ_name    
+                  
+            self._left = QFormLayout()
+            self._left.addRow("Id:", self.id )
+            self._left.addRow("Date:", self.date)
+            self._left.addRow("Product Name:", self.produ_name)
+          
+
+            self.price_per =  line_edit(self,3,"price_per")  #QLineEdit(parent= self) 
+            self.numbe_of =   line_edit(self,4, "numbe_of")    #QLineEdit(parent= self) 
+            self.total_amoun =  line_edit(self,5, "total_amoun") 
+            
+                 
+            self._widge[3] = self.price_per             
+            self._widge[4] = self.numbe_of    
+            self._widge[5] = self.total_amoun 
+
+           
+            #copy a set of widget to be use by line_edit
+            self.f_copy_widge(self.id)
+            self.f_copy_widge(self.date)
+            self.f_copy_widge(self.produ_name)
+            self.f_copy_widge(self.price_per)
+            self.f_copy_widge(self.numbe_of)
+
+            #because this is disabled
+            #self.f_copy_widge(self.total_amoun)
+
+                        
+            self._right = QFormLayout()
+            
+            self._right.addRow("Price per unit:", self.price_per)
+            self._right.addRow("Number of unit:", self.numbe_of) 
+            self._right.addRow("Total amount:", self.total_amoun)
+            
+            self._top =  QHBoxLayout()
+            self._top.addLayout(self._left)
+            self._top.addLayout(self._right)
+            
+            self._add = push_butto(self, 0, "_add", "add")  #QPushButton(parent = self, text="add")
+            self._edit = push_butto(self, 1, "_edit", "edit")  #QPushButton(parent = self, text="edit")
+            self._delet = push_butto(self, 2, "_delet", "delet") #QPushButton(parent = self, text="delete")
+            self._find = push_butto(self, 3, "_find", "find")   #QPushButton(parent = self, text="Find")                       
+            self.ok = push_butto(self, 4, "ok", "ok")   #QPushButton(parent = self, text="ok")
+            self._stop = push_butto(self, 5, "_stop", "stop")   #QPushButton(parent = self, text="stop")
+            self._back = push_butto(self, 6, "_back", "back")   #QPushButton(parent = self, text="back")
+            self._next = push_butto(self, 7, "_next", "next")  #QPushButton(parent = self, text="next")            
+            self._exit = push_butto(self, 8, "_exit", "exit")    #QPushButton(parent = self, text="exit")
+
+            #assing to main array of butto to make convient control
+            self.butto[0] = self._add 
+            self.butto[1] = self._edit 
+            self.butto[2] = self._delet 
+            self.butto[3] = self._find  
+            self.butto[4] = self.ok 
+            self.butto[5] = self._stop         
+            self.butto[6] = self._back 
+            self.butto[7] = self._next 
+            self.butto[8] = self._exit
+                        
+            self.f_input_butto(self)
+
+            #L23 
+            #on event click button      
+            self._add.clicked.connect(self.f_click_add)
+            self._edit.clicked.connect(self.f_click_edit)
+            self._delet.clicked.connect(self.f_click_delet)
+            self._find.clicked.connect(self.f_click_find)
+            
+            self.ok.clicked.connect(self.f_click_ok)
+            self._stop.clicked.connect(self.f_click_stop)
+            self._back.clicked.connect(self.f_click_back)
+            self._next.clicked.connect(self.f_click_next)
+
+            self._exit.clicked.connect(self.f_click_exit)
+                       
+            self._down = QGridLayout()
+            self._down.addWidget(self._add, 0, 0)
+            self._down.addWidget(self._edit, 0, 1)
+            self._down.addWidget(self._delet, 0, 2)
+            self._down.addWidget(self._find, 0, 3, 1, 2)
+
+
+            self._down.addWidget(self.ok, 1, 0)
+            self._down.addWidget(self._stop, 1, 1)
+            
+            self._down.addWidget(self._back, 1, 3)            
+            self._down.addWidget(self._next, 1, 4)            
+            self._down.addWidget(self._exit, 2, 0, 1 , 5)
+            
+            self.cente = QVBoxLayout()
+            self.cente.addLayout(self.front_layou)
+            self.cente.addLayout(self._top)
+            self.cente.addLayout(self._down)
+            self.cente.addStretch()
+            self.setLayout(self.cente)
+
+            self.f_initi_butto()
+            self.f_initi_data()
+            self.f_load_front()
+
+            self.statu = 0
+            
+      #2
+     
+      #refresh the copy of ListView front
+      def f_load_front(self): #2
+            #L290 
+            self.front.clear()
+            i = 0 
+            colum = ["ID  ", " DATE  ", " NAME  ", " UNITS  ", " PRICE  ", " TOTAL  "]
+            while i< self.lengt:#3
+                  j=0
+                  _text=""
+                  while j < MAX_DATA_ARRAY :#4
+
+                        if j >= 0 and j <= 2:#5
+                              _text += " |"+ colum[j] + self._data_array[i][j] + "| "
+                        elif j >= 3 and j <= 4:#5.2
+                              _text += " |" + colum[j] + str( float(self._data_array[i][j]) ) + "| " 
+                        else :#5.3
+                              
+                              _text +=  " |" + colum[j]  + str( float(self._data_array[i][3]) * float(self._data_array[i][4]) ) + "| " 
+
+                        #5.3
+
+                        j+=1
+                  
+                  #4
+
+                  self.front.insertItem(i, _text)
+                  i+=1
+            #3
+
+      #2
+     
+      def f_front_enable(self, statu):#2         
+            #L270 
+
+            self.disab = not statu
+            i = 0 
+            n = self.front.count()
+            while i < n: #4
+
+                  if statu == True:#3
+
+                        t = self.front.item(i)
+                        t.setFlags(Qt.ItemIsEnabled| Qt.ItemIsSelectable)
+
+
+                  else:#3.2
+
+                        t = self.front.item(i)
+                        t.setFlags(Qt.NoItemFlags)
+
+                  #3.2
+
+                  i+=1
+            #4
+
+            print(f"L270 {self._drive_next-1= }\n")
+            self.front.setCurrentRow( self._drive_next-1)
+
+      #2
+     
+     
+
+      def f_click_front(self): #2
+            #L220 
+      
+            print(f"L221 {self.disab= }\n")
+
+            if self.disab== 1:#4
+                  #to avoid display, kasi disabled na
+                  return
+            #4
+
+            #display ang laman sa isang row
+            #pero kaylangan ng .text function
+            _item = self.front.currentItem()
+            print(f"L221_2 {self.disab= }, {_item.text()= }, {_item= }, {self.front.currentRow()= }\n")
+            selec = self.front.currentRow()
+
+            self._drive_next = selec+1
+            self.lengt_label.setText(str(self._drive_next)) 
+            
+            print(f"L221_3 {selec= }, {self._drive_next= }\n")
+            i =0
+            while i < MAX_DATA_ARRAY :#3
+
+                  self._widge[i].setText( self._data_array[self._drive_next -1][i] )
+                  i+=1
+            #3
+      #2
+
+      def f_arran_find(self, _drive_next_p):#2
+
+            #L170
+            i = 0 
+            while i < self.lengt:#3
+
+                  #less 1 to follow 0 to 3 index
+                  if (_drive_next_p-1) == i:#4
+
+                        j = 0
+                        while j < MAX_DATA_ARRAY: #5
+                                             
+                              self._widge[j].setText( self._data_array[i][j] )
+                              j+=1
+                        #5
+
+                        break     
+                  #4
+                  i+=1
+            #3
+      #2
+
+      def f_click_delet(self): #2
+
+            #L120 
+            self.statu = "_delet"
+            _text, retur = QInputDialog.getText(self, "Mensahe", "anung id yung i-delete", QLineEdit.Normal, \
+            self._widge[0].text())
+
+
+            if retur == 0:#3
+
+                  #block cancel
+                  return
+            #3
+
+            if _text == "":#3
+
+                  #block none enter value 
+                  QMessageBox.critical(self, "mensahe","hindi pede blank na input")
+                  return
+            #3
+
+            retur, _text = self.f_input_numbe(_text) 
+            if retur != True:#3
+
+                  #block none enter value 
+                  QMessageBox.critical(self, "mensahe","not-valid number ang pedng input")
+                  return
+            #3
+
+            _find = 0
+            #execute delete
+            for i in range(0, len(self._data_array)) :#4                 
+
+                  print(f"L22_2 {i= }, {self._data_array[i][0].strip()= }, {str(int(_text))= }\n")
+
+                  if self._data_array[i][0].strip() == str(int(_text)): #5
+
+                        self._data_array.pop(i)
+                        self.lengt-=1
+                        _find = 1
+                        
+                        print(f"L22_3 {self.lengt= }, {len(self._data_array)= },\n{self._data_array= }\n")
+                        break
+                  #5
+                  
+            #4
+
+            #if fail to find the id
+            if _find != 1:#7
+
+                  QMessageBox.critical(self, "mensahe","hindi nakita ung id {_text}")
+                  return
+            #7
+            
+            self.f_load_front() 
+
+            #reset the focus 
+            if self.lengt == 0 :#8
+
+                  #empty then reset data
+                  for i in range(0, MAX_DATA_ARRAY): #2
+
+                        self._widge[i].setText("")
+                  #2
+                  self._drive_next =0
+                  self.lengt_label.setText(str(self._drive_next))
+
+                  return
+            #8
+
+            #reset form start
+            self._drive_next = 1
+            self.lengt_label.setText(str(self._drive_next))
+
+            for i in range(0, MAX_DATA_ARRAY): #3
+
+                        self._widge[i].setText(self._data_array[self._drive_next -1][i] )
+            #3           
+            self.front.setCurrentRow(self._drive_next-1)
+      #2
+      
+      def f_input_numbe(self, _text):#2
+
+            #L140 
+
+            try:#3
+                  int(_text)
+            except: #3.2
+                  _text = "0"
+                  return False, _text
+            #3.2
+
+            return True, _text
+      #2
+      def f_click_add(self):#2
+            
+            #L110 
+            self.statu = "_add"
+            self._add.setEnabled(False)
+            self._edit.setEnabled(False)
+            self._delet.setEnabled(False)
+            self._back.setEnabled(False)
+            self._next.setEnabled(False)
+            
+            self.ok.setEnabled(True)
+            self._stop.setEnabled(True)
+            self._find.setEnabled(False)            
+            
+            i=0
+            while i < 6:#3
+
+                  self._widge[i].setEnabled(True)
+
+                  if 5 == i :#4
+                         self._widge[i].setEnabled(False)
+                  #4 
+
+                  self._widge[i].setText("")
+                  i+=1
+            #3           
+
+            self.f_front_enable(False)
+            self._widge[0].setFocus()
+      #2
+
+      def f_save_add(self):#2
+
+            #L80 
+          
+            try:#3
+                  #test it kung may laman
+                  self._data_array[self.lengt]
+
+            except IndexError:#3.2
+            
+                  self._data_array.append( ["" for i in range(0,6) ] )
+                  print("L82\n")
+            #3
+            
+            
+            retur = self. f_input_numbe( self._widge[0].text())
+            print(f"L83 {retur= }\n")
+            
+            if retur[0]!= True:#3
+
+                  QMessageBox.critical(self, "mensahe", "error: kaylangan numeric ung input ng id")
+                  self._widge[0].setFocus()
+                  return False
+            #3
+
+            retur = self. f_input_numbe( self._widge[3].text())
+
+            if retur[0] != True: #5
+                  self._widge[3].setText("0")
+            #5
+            
+            retur = self. f_input_numbe( self._widge[4].text())
+            if retur[0] != True: #5
+                  self._widge[4].setText("0")
+            #5
+
+            i = 0
+            
+            while i < 6: #4
+
+                  print(f"L83_2 {i= }, {self.lengt= }\n")
+                  self._data_array[self.lengt][i] = self._widge[i].text()
+                  i+=1
+            #4
+
+            print(f"L83_3 {self.front.count()= } \n")
+            
+            self.lengt+=1
+            self.front.setCurrentRow(self.lengt-1)
+            self.lengt_label.setText(str(self.lengt))  
+            self._drive_next = self.lengt
+            self.f_load_front()
+            print(f"L85 {self.lengt= }, {self.front.count()= }, {self._data_array= }\n")
+
+            return True                                
+      #2
+
+      def f_click_edit(self):#2
+            
+            #L100 
+
+            print(f"L101 {self.lengt= } \n")
+            if self.lengt <= 0:#10
+                  QMessageBox.critical(self, "mensahe", "wlang laman ang database\nkaya hindi makaka edit")
+                  return 
+            #10
+
+            self.statu = "_edit"   
+
+            self._add.setEnabled(False)
+            self._edit.setEnabled(False)
+            self._delet.setEnabled(False)
+            self._back.setEnabled(False)
+            self._next.setEnabled(False)
+            
+            self.ok.setEnabled(True)
+            self._stop.setEnabled(True)
+            self._find.setEnabled(False)            
+            
+            i=0
+            while i < 6:#3
+
+                  self._widge[i].setEnabled(True)
+
+                  if i == 5 :#4
+                        self._widge[i].setEnabled(False)
+
+                  #4
+                  i+=1
+            #3                    
+            
+            self.f_front_enable(False)
+            self._widge[0].setFocus()
+      #2
+
+      def f_save_edit(self):#2
+            
+            #L130 
+            n = len(self._data_array[self._drive_next-1])
+
+            retur = self.f_input_numbe(self._widge[0].text() ) 
+            if retur[0] != True:#7
+
+                  QMessageBox.critical(self, "mensahe", "number dapat ilagay sa id", QMessageBox.Yes)
+
+                  self._widge[0].setFocus() 
+                  return False
+            #7
+
+            retur= self.f_input_float(self._widge[3].text() ) 
+            if retur[0]!= True :#4
+                  self._widge[3].setText("0") 
+            #4 
+
+            retur = self.f_input_float(self._widge[4].text() )
+            if retur[0] != True :#4
+                  self._widge[4].setText("0") 
+            #4 
+           
+            for i in range(0, n):#3
+
+                  self._data_array[self._drive_next-1][i] =  self._widge[i].text()
+                
+            #3
+
+            self.f_load_front()
+
+            #set focus on front
+            self.front.setCurrentRow(self._drive_next-1)
+            return True
+      #2
+
+    
+
+      def f_initi_butto(self):#2
+                  
+            #L90 
+            self._add.setEnabled(True)
+            self._edit.setEnabled(True)
+            self._delet.setEnabled(True)
+            self._back.setEnabled(True)
+            self._next.setEnabled(True)
+            
+            self.ok.setEnabled(False)
+            self._stop.setEnabled(False)
+            self._find.setEnabled(True)
+
+            i=0
+            while i < 6:#3
+
+                  self._widge[i].setEnabled(False)
+                  i+=1
+            #3
+
+      #2
+
+      def f_click_back(self):#2
+            
+            #L60 
+
+            self._drive_next -=1
+
+            if self.lengt == 0 : #3
+                  QMessageBox.warning(self, "mali", "wlang laman pa ang database", QMessageBox.Ok, QMessageBox.Ok)
+                  self._drive_next +=1
+                  return
+            #3
+           
+            if self._drive_next <= 0 : #3
+                  QMessageBox.warning(self, "mali", "sagad na sa mababa", QMessageBox.Ok, QMessageBox.Ok)
+                  self._drive_next +=1
+                  return
+            #3
+          
+            for i in range(0, len(self._data_array[self._drive_next-1] ) ): #4
+
+                   self._widge[i ].setText( self._data_array[self._drive_next-1][i] )
+            #4
+
+            self.front.setCurrentRow( self._drive_next -1)
+            self.lengt_label.setText( str(self._drive_next) )
+
+            print(f"L65 {self._drive_next -1= }\n")
+
+      #2
+
+      def f_click_next(self):#2
+      
+            #L50 
+
+            self._drive_next +=1
+
+            if self.lengt == 0 : #3
+                  QMessageBox.warning(self, "mali", "wlang laman pa ang database", QMessageBox.Ok, QMessageBox.Ok)
+                  self._drive_next -=1
+                  return
+            #3
+           
+            if self._drive_next > self.lengt : #3
+                  QMessageBox.warning(self, "mali", "sagad na sa mataas", QMessageBox.Ok, QMessageBox.Ok)
+                  self._drive_next -=1
+                  return
+            #3
+ 
+          
+            for i in range(0, len(self._data_array [ self._drive_next-1] ) ): #4
+
+                  #print(f"L53 {i= }, {self._drive_next-1= } \n { type(self._data_array[self._drive_next-1][i])= } \n")
+            
+                  self._widge[i ].setText( self._data_array[self._drive_next-1][i] )
+            #4
+      
+            
+            self.lengt_label.setText( str(self._drive_next) )
+
+            print(f"L55 {self._drive_next -1= } \n")
+            self.front.setCurrentRow( self._drive_next -1)
+      #2
+      
+      def f_click_ok(self):#2
+            
+            #L30 
+            if self.statu =="_add": #3
+
+                  retur =self.f_save_add()
+
+                  print(f"L30 {retur= } \n")
+
+                  if retur == False:#5
+
+                        print(f"L31 \n")
+                  #5
+
+                  if retur != True: #4
+                        #meron nang message sa unang process
+                        self._widge[0].setFocus()
+                        return False
+                  #4
+
+            elif self.statu =="_edit" :#3.2
+                  retur = self.f_save_edit()
+
+                  #cannot save kasi error sa input 
+                  if retur != True:#4
+                        self._widge[0].setFocus()
+                        return False
+                  #4
+ 
+            elif self.statu =="_delet" :#3.2
+                  #no code here
+                  pass
+            #3.2
+
+            self.f_initi_butto()      
+            self.f_front_enable(True)
+      #2     
+      
+      def f_click_find(self):#2
+            
+            #L40 
+            #print(f"L40 _data_array \n")
+            
+            #blocks if no data
+            if self.lengt == 0 :#3
+            
+                  QMessageBox.information(self, "mensahe", "wlang laman ang data!")
+                  return
+            #3
+
+            _text, retur =QInputDialog.getText(self, "Mensahe", "input ang i-find na id", QLineEdit.Normal, "")
+            
+            if retur != True: #3
+
+                  #user canceled the process
+                  return
+            #3
+
+            retur, _text = self.f_input_numbe(_text)
+            if retur != True:#4
+
+                  QMessageBox.critical(self, "mensahe", "number lang dapat ang input")
+                  return
+            #4
+
+            _id = _text.strip()
+            _equal = 0
+
+            i = 0
+            while i < self.lengt:#5
+
+                  if _id == self._data_array[i][0].strip():#2
+                        _equal = 1
+                        #output index 1 to 3
+                        targe_i = i+1
+                        QMessageBox.information(self, "mensahe", f"nakita ko ang id {_id}")
+                        break
+                  #2
+                  i+=1
+            #5 
+
+            if _equal != 1: #3
+
+                  QMessageBox.critical(self, "mensahe", f"hindi ko nakita ang id na {_id}")
+                  return
+            #3
+            
+
+            #i find it then focus on that index
+            self._drive_next = targe_i
+            self.lengt_label.setText(str(self._drive_next))
+
+            self.f_arran_find(self._drive_next) 
+            self.front.setCurrentRow(self._drive_next -1)
+
+      #2
+
+      def f_click_stop(self):#2
+
+            #L160 
+            retur = QMessageBox.information(self, "message", "stop, Y/ N", QMessageBox.Yes | QMessageBox.No, QMessageBox.Yes   )
+            
+            if retur == QMessageBox.Yes: #3
+                  
+                  if self.statu == "_edit": #4
+
+                        i=0
+                        while i < MAX_DATA_ARRAY:#5
+
+                              self._widge[i].setText( self._data_array[self._drive_next-1] [i] )
+                              i+=1
+                        #5
+
+                  #4
+ 
+                  if self.statu == "_add": #4
+
+                        i=0
+                        while i < MAX_DATA_ARRAY:#5
+
+                              self._widge[i].setText( self._data_array[self._drive_next-1] [i] )
+                              i+=1
+                        #5
+
+                  #4
+                  self.f_initi_butto()
+                  self.f_front_enable(True)
+                 
+
+            #3
+      #2     
+            
+      def f_click_exit(self):#2
+
+            #L150 
+            
+            if self.f_messa_close() == QMessageBox.Yes:#3
+
+                  self.destroy()
+                  apps.quit()
+            #3
+      #2
+      
+      #a close message function
+      def f_messa_close(self):#2
+            #L350 
+            retur = QMessageBox.information(self, "message", "press y to quit, n for canceled", QMessageBox.Yes |  QMessageBox.No, QMessageBox.Yes)     
+            
+            return retur
+      #2         
+
+      #initial input of all object butto for push_butto
+      def f_input_butto(self, objec ): #2
+            #L460 
+
+            #head 
+            for i in objec.butto:#3
+
+                  print(f"L462 {i.paren_name= }, {i._index= }, {i._name= } \n")
+
+                  #inside push_button parent
+                  for j in range( len(objec.butto) ): #4
+
+                        i.f_input_widge( objec.butto[j] )
+                                       
+                  #4
+            #3          
+            f_debug_410("paren", objec.butto[0]._widge)
+
+      #2
+   
+      def f_input_float(self, _text):#2   
+            #L480 
+
+            if _text == ".":#3
+
+                  return True, 0
+            #3
+
+            try: #4
+
+                  retur =float(_text)
+            except: #4.2
+
+                  return False,0
+            #4.2
+
+            return True, retur 
+      #2
+#1
+
+      #i made a class for this para sa keypress
+class line_edit(QLineEdit):#10
+
+      #L180 
+
+      _widge = [None, None, None, None, None, None ]
+
+      widge_index = 0
+
+      def __init__(self, objec, _index, _name):#2
+            #L380 
+            super(QLineEdit, self).__init__(objec) 
+            self.paren = objec     
+            self._index = _index
+            self._name = _name
+
+      #2
+
+      #def keyPressEvent(self, event: QtGui.QKeyEvent)-> None: #2
+      def keyPressEvent(self, event) : #2
+            
+            #L190
+            #kaylangan tawagin ito para pati keyup kasama na
+            super(line_edit,self).keyPressEvent(event)
+
+            print(f"L191 {self._index= }\n")
+
+            if self._index >= 0 and  self._index <= 2:#3
+
+                  print(f"L191_2 \n")
+                  self.f_text_set_focus(event)
+            elif self._index == 4 or self._index == 3:#3.2
+
+                  print(f"L191_3 \n")
+                  self.f_aritm(event)
+            else:#3.2
+
+                  print(f"eror: out of range ang self.index {self.index}\n")
+            #3.2        
+
+
+      #2
+
+      #ung 0 to 2 the textbox pag lilipat ng set focus 
+      def f_text_set_focus(self, event) :#2
+            #L400 
+
+            print(f"L401 {self._index= },  {event.key()= } {QtCore.Qt.Key_Return= }\n")
+
+            if event.key() ==  QtCore.Qt.Key_Return or event.key() ==  Qt.Key_Down or event.key() == Qt.Key_Enter:#3
+
+                  self._widge[self._index +1].setFocus()
+                  print(f"L401_2 \n")
+            elif event.key() ==  QtCore.Qt.Key_Up: #3.2
+
+                  if self._index == 0:#4
+
+                        print(f"L401_3 \n")
+                        return
+                  #4                  
+                  self._widge[self._index -1].setFocus()
+                  print(f"L394 \n")
+            #3.2
+
+           
+      #2
+
+      def f_aritm(self, event):#2
+            #L390 
+                          
+            print(f"L391 {event.key()= }, {self._index= }, {self.text()= }, {event.text()= } \n")
+            
+            if event.key() != QtCore.Qt.Key_Enter and event.key() != QtCore.Qt.Key_Return and event.key() != QtCore.Qt.Key_Backspace and event.key() != QtCore.Qt.Key_Left and event.key() != QtCore.Qt.Key_Right and event.key() != QtCore.Qt.Key_Up and event.key() != QtCore.Qt.Key_Down : #3
+                  
+                  #filter none numbers, self.text() came from parent QLineEdit
+                  retur, _text = self.f_input_float(self.text() )
+                  if retur != 1:#4
+                  
+                        QMessageBox.critical(self, "mensahe", "maginput ng numbers only")
+                        #return
+                  #4
+
+                  #numbers and . will pass
+                  
+                  print(f"L391_2 \n")
+                  #computation 
+                  self.f_nuetr_keypress()
+             
+
+            elif event.key() == QtCore.Qt.Key_Return or event.key() == QtCore.Qt.Key_Enter: #3.2
+
+                  if self._index +1 ==5:#5
+                        
+                        if QMessageBox.information(self, "mensahe", "I-sasave mo na ba Y/N", \
+                        QMessageBox.Yes | QMessageBox.No, QMessageBox.Yes) == QMessageBox.Yes: #7   
+                              self.paren.f_click_ok()
+                        #7
+                        print(f"L392 \n")
+                        return
+                  #5
+
+                  print(f"L392_2 \n")
+                  self._widge[self._index +1].setFocus()
+
+            elif event.key() == QtCore.Qt.Key_Up: #3.3
+                  
+                  print(f"L392_3 \n")
+                  self._widge[self._index -1].setFocus()
+
+            elif event.key() == QtCore.Qt.Key_Down: #3.4
+
+                  if self._index +1 ==5:#5
+
+                        print(f"L392_4 \n")
+                        return
+                  #5
+
+                  print(f"L392_5 \n")
+                  self._widge[self._index +1].setFocus()
+            #3.4
+
+        
+      #2
+
+      #isalin ng isa-isa ang sa element ng self._widge
+      #ang galing sa parameter _widge
+      def f_input_widge(self, give_widge):#2
+            #L240
+
+            print(f"L241 {self.widge_index= },{give_widge= }, \n{self._widge= }\n")
+
+            self._widge[self.widge_index] = give_widge
+            self.widge_index+=1
+      #2
+     
+      def f_input_float(self, _text):#2
+            #L210
+
+            if _text == ".":#4
+                  
+                  return 1, 0
+            #4
+
+
+            try :#3
+                  float(_text)
+            except :#3.2
+                  
+                  return 0, 0
+            #3.2
+
+            return 1, float(_text)
+      #2
+            
+      def f_nuetr_keypress(self):#1
+            #L200 
+
+            retur, _float = self.f_input_float( self._widge[3].text() )
+            
+            a = _float
+            
+            retur, _float = self.f_input_float( self._widge[4].text() )
+            
+            b = _float
+
+            self._widge[5].setText( str(b *a) )
+
+      #1
+
+#10
+
+class list_widge(QListWidget) :#20
+      #L300
+
+      def __init__(self, objec):#2
+            #L340
+            super().__init__(objec)
+            self.list_objec = []
+            self.lengt = 0
+            self.paren = objec
+      #2
+      def keyPressEvent(self, _event): #3
+            #L310        
+                       
+            print(f"L311 {_event.key()= }, {self.list_objec[0].lengt= }, {self.list_objec[0]._drive_next= }\n")
+
+            if self.paren.disab == True :#5
+                  return True
+            #5
+
+            if _event.key() == QtCore.Qt.Key_Up :#4
+            
+                  self.list_objec[0].f_click_back()
+                  print(f"L311_2 \n")
+            #4    
+            
+            if _event.key() == QtCore.Qt.Key_Down  :#5
+
+                  self.list_objec[0].f_click_next()
+                  print(f"L311_3 \n")
+            #5    
+
+            #nag dodouble call ung keypressEvent ng list_widge pag na call
+            #ang parent QListWidget
+            #super().keyPressEvent(_event)
+           
+      #3
+
+      def f_add_objec(self, objec ):#2
+            #L330
+            self.lengt+=1
+
+            self.list_objec.append(objec)
+
+            
+      #2
+      
+#20
+
+      
+class push_butto(QPushButton):#11
+      #L420 
+
+
+      def __init__(self, paren, _index, _name, _text):#2
+            #L430 
+            super(QPushButton, self).__init__(parent = paren, text = _text)
+            #use standard of using main parent
+            self.paren_name = "push_butto"
+            self.paren = paren
+            self._index = _index            
+            self._name = _name
+            self._widge = [None]* 9
+            self.lengt = 0
+            
+      #2
+
+      def keyPressEvent(self, event):#2
+            #L440 
+
+            #super(QPushButton, self).keyPressEvent(event)
+            print(f"L441 {self.paren_name= }, {self._name= }, {self._index= }, {event.key()= },\n{self.paren.disab= } \n")
+
+            if event.key() == Qt.Key_Enter or event.key() == Qt.Key_Return :#3                  
+                  
+                  self.f_diffe_butto(self._index)
+                                 
+            #3
+
+            if event.key() == Qt.Key_Left :#7
+
+                  if self.paren.disab == True:#3 
+                        
+                        if self._index == 4 :#4
+                               return True
+                        #4 
+                     
+                        if self._index == 8 :#5
+                              self._widge[5].setFocus()
+                              return True
+                        #5                                     
+                  #3
+             
+                  if self._index == 6:# 5
+                        self._widge[3].setFocus()
+                        return True
+                  #5
+                                         
+                  if self._index == 0:# 7
+                        return 
+                  #7
+                  self._widge[self._index-1].setFocus()
+            #7
+
+            if event.key() == Qt.Key_Right:#8
+
+                  if self.paren.disab == True:#3 
+
+                        if self._index == 8 :#4
+                              return 
+                        #4
+                        if self._index == 5 :#4
+                              self._widge[8].setFocus()
+                              return      
+                        #4
+                        
+                  #3
+
+
+                  if self._index == 3 :#2
+
+                        self._widge[6].setFocus()
+                        return
+                  #2
+                  if self._index == 8 :#3
+
+                        return
+                  #3
+                  
+                  self._widge[self._index+1].setFocus()
+            #8
+      
+      #2
+
+      #use standard array index
+      def f_input_widge(self, _widge):#2
+            #L450 
+                        
+            print(f"L451 {self.lengt= },{_widge.paren_name= } {_widge._name= }\n ")
+            self._widge[self.lengt] = _widge
+
+            self.lengt +=1
+      #2
+
+      def f_diffe_butto(self, _code):#2
+            #L470 
+
+            if self.paren.disab == True:#4 
+
+                  if _code == 4:#5
+
+                        if QMessageBox.information(self, "mensahe", "mag-save Y/N", QMessageBox.Yes | QMessageBox.No, QMessageBox.Yes) == QMessageBox.Yes:#5   
+                     
+                              self.paren.f_click_ok()
+                        #7
+                  #5
+
+                  if _code == 5 :#8
+                        self.paren.f_click_stop()                                                      
+                  #8
+
+                  if _code == 8:#3
+                        self.paren.f_click_exit()
+                  #3
+                  return True
+            #4
+
+            if _code == 0:#3
+                  self.paren.f_click_add() 
+            elif _code == 1:#3.2
+                  self.paren.f_click_edit() 
+            elif _code == 2:#3.3
+                  self.paren.f_click_delet()
+            elif _code == 3:#3.5
+                  self.paren.f_click_find()                  
+            elif _code == 6:#3.6
+                  self.paren.f_click_back()                  
+            elif _code == 7:#3.7
+                  self.paren.f_click_next()            
+            elif _code == 8:#3.8                     
+                  self.paren.f_click_exit()            
+            else:#3.8
+            
+                  print(f"L475 internal error: sobra sa lenght ng index {_code= }")
+                  return False
+            #3.8
+
+            return True
+      #2
+#11
+
+
+#testing mode
+def f_testmode():#1
+      #L260    
+      pass
+#1
+
+def f_debug_410( _id, _widge):#1
+      #L410 
+
+      n = len(_widge )
+      i = 0 
+      print(f"L410 debug data monitor {_id= }")
+      while i < n: #3
+
+            print(f"L412 {_widge[i]._index=}, {_widge[i]._name= } \n")
+
+            i+=1
+      #3
+
+#1
+
+
+
+
+apps = QApplication(sys.argv)
+
+windo = paren()
+
+windo.show()
+
+#disable muna kung wala pang testting
+#f_testmode()
+
+apps.exec()
+sys.exit()
