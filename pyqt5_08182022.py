@@ -25,25 +25,25 @@ a: Constant
 
 b: Description
 
-a: QMessageBox.NoIcon  #note use small letter at the begining of word of func ex noIcon()
+a: QMessageBox = noIcon  #note use small letter at the begining of word of func ex noIcon()
 
 b: the message box does not have any icon.
 
 follow the series...
 
-QMessageBox.Question
+QMessageBox.question   
 
 an icon indicating that the message is asking a question.
 
-QMessageBox.Information
+QMessageBox.information
 
 an icon indicating that the message is nothing out of the ordinary.
 
-QMessageBox.Warning
+QMessageBox.warning
 
 an icon indicating that the message is a warning, but can be dealt with.
 
-QMessageBox.Critical
+QMessageBox.critical
 
 an icon indicating that the message represents a critical problem.
 
