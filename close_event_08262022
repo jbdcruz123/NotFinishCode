@@ -1,0 +1,86 @@
+# -*- coding: utf-8 -*-
+
+# Form implementation generated from reading ui file 'dialog_box.ui'
+#
+# Created by: PyQt5 UI code generator 5.14.1
+#
+# WARNING! All changes made in this file will be lost!
+
+
+from PyQt5 import QtCore, QtGui, QtWidgets
+
+
+class Ui__main(QtWidgets.QWidget): #1
+
+      def __init__(self, appli = None):#2
+            super().__init__()
+            self.setupUi(self)
+            self.appli = appli
+      #2
+
+
+      def setupUi(self, _main): #2
+            _main.setObjectName("_main")
+            _main.resize(400, 300)
+            self.butto_1 = QtWidgets.QPushButton(_main)
+            self.butto_1.setGeometry(QtCore.QRect(10, 60, 351, 41))
+            self.butto_1.setLayoutDirection(QtCore.Qt.LeftToRight)
+            self.butto_1.setCheckable(False)
+            self.butto_1.setAutoDefault(False)
+            self.butto_1.setDefault(False)
+            self.butto_1.setFlat(False)
+            self.butto_1.setObjectName("butto_1")
+            self.edit_1 = QtWidgets.QLineEdit(_main)
+            self.edit_1.setGeometry(QtCore.QRect(100, 20, 261, 31))
+            self.edit_1.setLayoutDirection(QtCore.Qt.LeftToRight)
+            self.edit_1.setObjectName("edit_1")
+            self.label_1 = QtWidgets.QLabel(_main)
+            self.label_1.setGeometry(QtCore.QRect(10, 20, 81, 31))
+            self.label_1.setFrameShape(QtWidgets.QFrame.Panel)
+            self.label_1.setObjectName("label_1")
+            self.butto_1.clicked.connect(self.f_click_butto_1)
+
+            self.retranslateUi(_main)
+            QtCore.QMetaObject.connectSlotsByName(_main)
+      #2
+
+      def retranslateUi(self, _main):#2
+
+            _translate = QtCore.QCoreApplication.translate
+            _main.setWindowTitle(_translate("_main", "testing"))
+            self.butto_1.setText(_translate("_main", "Press me to close"))
+            self.edit_1.setText(_translate("_main", "laman"))
+            self.label_1.setText(_translate("_main", "Input:  "))
+
+      #2
+
+      def closeEvent(self, event): #2
+
+            r = QtWidgets.QMessageBox.information(self, "mensahe", "close Y / N", QtWidgets.QMessageBox.Yes| QtWidgets.QMessageBox.No, QtWidgets.QMessageBox.Yes)   
+            if r == QtWidgets.QMessageBox.No:#3
+
+                  event.ignore()
+                  return 
+            #3       
+      #2
+
+      def f_click_butto_1(self):#2
+
+            self.destroy()
+            self.appli.quit()
+
+      #2
+
+#1
+
+if __name__ == "__main__":
+    import sys
+    _appli = QtWidgets.QApplication(sys.argv)
+    
+    ui = Ui__main(appli = _appli)
+    
+    ui.show()
+    sys.exit(_appli.exec_())
+
+
+
