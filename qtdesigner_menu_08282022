@@ -1,0 +1,243 @@
+#UNANG test pure na hindi ko pinago ung code galing qtdesign
+
+# -*- coding: utf-8 -*-
+
+# Form implementation generated from reading ui file 'menubar.ui'
+#
+# Created by: PyQt5 UI code generator 5.14.1
+#
+# WARNING! All changes made in this file will be lost!
+
+
+from PyQt5 import QtCore, QtGui, QtWidgets
+
+
+class Ui_MainWindow(object): #1
+      def setupUi(self, MainWindow):#2
+            MainWindow.setObjectName("MainWindow")
+            MainWindow.resize(800, 600)
+            self.centralwidget = QtWidgets.QWidget(MainWindow)
+            self.centralwidget.setObjectName("centralwidget")
+
+            self.label = QtWidgets.QLabel(self.centralwidget)
+            self.label.setGeometry(QtCore.QRect(180, 60, 331, 171))
+
+            font = QtGui.QFont()
+            font.setPointSize(36)
+            font.setBold(True)
+            font.setWeight(75)
+
+            self.label.setFont(font)
+            self.label.setAlignment(QtCore.Qt.AlignCenter)
+            self.label.setObjectName("label")
+
+            MainWindow.setCentralWidget(self.centralwidget)
+            self.menubar = QtWidgets.QMenuBar(MainWindow)
+            self.menubar.setGeometry(QtCore.QRect(0, 0, 800, 22))
+            self.menubar.setObjectName("menubar")
+            self.menufile = QtWidgets.QMenu(self.menubar)
+            self.menufile.setObjectName("menufile")
+            self.menuedit = QtWidgets.QMenu(self.menubar)
+            self.menuedit.setObjectName("menuedit")
+            MainWindow.setMenuBar(self.menubar)
+            self.statusbar = QtWidgets.QStatusBar(MainWindow)
+            self.statusbar.setObjectName("statusbar")
+            MainWindow.setStatusBar(self.statusbar)
+            self.actionnew = QtWidgets.QAction(MainWindow)
+            self.actionnew.setObjectName("actionnew")
+            self.actionsave = QtWidgets.QAction(MainWindow)
+            self.actionsave.setObjectName("actionsave")
+            self.actioncopy = QtWidgets.QAction(MainWindow)
+            self.actioncopy.setObjectName("actioncopy")
+            self.actionpaste = QtWidgets.QAction(MainWindow)
+            self.actionpaste.setObjectName("actionpaste")
+
+            self.menufile.addAction(self.actionnew)
+            self.menufile.addAction(self.actionsave)
+            self.menuedit.addAction(self.actioncopy)
+            self.menuedit.addAction(self.actionpaste)
+            self.menubar.addAction(self.menufile.menuAction())
+            self.menubar.addAction(self.menuedit.menuAction())
+
+            self.retranslateUi(MainWindow)
+            QtCore.QMetaObject.connectSlotsByName(MainWindow)
+            self.actionnew.triggered.connect(lambda: self.f_show_label("new menu is click"))
+            self.actionsave.triggered.connect(lambda: self.f_show_label("save menu is click"))
+            self.actioncopy.triggered.connect(lambda: self.f_show_label("copy menu is click"))
+            self.actionpaste.triggered.connect(lambda: self.f_show_label("paste menu is click"))
+
+      #2   
+      def f_show_label(self, _text):#2
+            self.label.setText(_text)
+            self.label.adjustSize()
+      #2
+
+      def retranslateUi(self, MainWindow):#2
+            _translate = QtCore.QCoreApplication.translate
+            MainWindow.setWindowTitle(_translate("MainWindow", "MainWindow"))
+            self.label.setText(_translate("MainWindow", "TextLabel"))
+            self.menufile.setTitle(_translate("MainWindow", "file"))
+            self.menuedit.setTitle(_translate("MainWindow", "edit"))
+
+            self.actionnew.setText(_translate("MainWindow", "&new"))
+            self.actionnew.setToolTip(_translate("MainWindow", "new file"))
+            self.actionnew.setStatusTip(_translate("MainWindow", "create a new file"))
+            self.actionnew.setShortcut(_translate("MainWindow", "Ctrl+N"))
+            self.actionsave.setText(_translate("MainWindow", "save"))
+
+            self.actionsave.setStatusTip(_translate("MainWindow", "saving a file"))
+            self.actionsave.setShortcut(_translate("MainWindow", "Ctrl+S"))
+            self.actioncopy.setText(_translate("MainWindow", "copy"))
+            self.actioncopy.setStatusTip(_translate("MainWindow", "copying a file"))
+            self.actioncopy.setShortcut(_translate("MainWindow", "Ctrl+C"))
+            self.actionpaste.setText(_translate("MainWindow", "paste"))
+            self.actionpaste.setStatusTip(_translate("MainWindow", "paste a file"))
+            self.actionpaste.setShortcut(_translate("MainWindow", "Ctrl+V"))
+      #2
+
+      def KeyPressEvent(self, event):#2
+
+            print(f"L20 {event.Key= }\n")
+      #2
+
+#1
+if __name__ == "__main__":
+    import sys
+    app = QtWidgets.QApplication(sys.argv)
+    MainWindow = QtWidgets.QMainWindow()
+    ui = Ui_MainWindow()
+    ui.setupUi(MainWindow)
+    MainWindow.show()
+    sys.exit(app.exec_())
+
+
+
+###########################33
+#panibagong test na naka inherit sa QWidget
+from PyQt5 import QtCore, QtGui, QtWidgets
+
+coun = 0
+
+class Ui_MainWindow(QtWidgets.QWidget): #1
+      def __init__(self, main_windo ) :#2
+            super().__init__(main_windo)
+
+            self.setupUi(main_windo)
+            
+
+            print(f"L10\n")
+      #2
+
+
+      def setupUi(self, MainWindow):#2
+            MainWindow.setObjectName("MainWindow")
+            MainWindow.resize(800, 600)
+            
+            self.setObjectName("self")
+
+            self.label = QtWidgets.QLabel(self)
+            self.label.setGeometry(QtCore.QRect(180, 60, 331, 171))
+
+            font = QtGui.QFont()
+            font.setPointSize(36)
+            font.setBold(True)
+            font.setWeight(75)
+
+            self.label.setFont(font)
+            self.label.setAlignment(QtCore.Qt.AlignCenter)
+            self.label.setObjectName("label")
+
+            MainWindow.setCentralWidget(self)
+            self.menubar = QtWidgets.QMenuBar(MainWindow)
+            self.menubar.setGeometry(QtCore.QRect(0, 0, 800, 22))
+            self.menubar.setObjectName("menubar")
+
+            self.menufile = QtWidgets.QMenu(self.menubar)
+            self.menufile.setObjectName("menufile")
+
+            self.menuedit = QtWidgets.QMenu(self.menubar)
+            self.menuedit.setObjectName("menuedit")
+
+            MainWindow.setMenuBar(self.menubar)
+            self.statusbar = QtWidgets.QStatusBar(MainWindow)
+            self.statusbar.setObjectName("statusbar")
+            MainWindow.setStatusBar(self.statusbar)
+
+            self.actionnew = QtWidgets.QAction(MainWindow)
+            self.actionnew.setObjectName("actionnew")
+            self.actionsave = QtWidgets.QAction(MainWindow)
+            self.actionsave.setObjectName("actionsave")
+            self.actioncopy = QtWidgets.QAction(MainWindow)
+            self.actioncopy.setObjectName("actioncopy")
+            self.actionpaste = QtWidgets.QAction(MainWindow)
+            self.actionpaste.setObjectName("actionpaste")
+
+            self.menufile.addAction(self.actionnew)
+            self.menufile.addAction(self.actionsave)
+            self.menuedit.addAction(self.actioncopy)
+            self.menuedit.addAction(self.actionpaste)
+            self.menubar.addAction(self.menufile.menuAction())
+            self.menubar.addAction(self.menuedit.menuAction())
+
+            self.retranslateUi(MainWindow)
+            QtCore.QMetaObject.connectSlotsByName(MainWindow)
+            self.actionnew.triggered.connect(lambda: self.f_show_label("new menu is click"))
+            self.actionsave.triggered.connect(lambda: self.f_show_label("save menu is click"))
+            self.actioncopy.triggered.connect(lambda: self.f_show_label("copy menu is click"))
+            self.actionpaste.triggered.connect(lambda: self.f_show_label("paste menu is click"))
+
+            self.main_windo = MainWindow
+
+      #2   
+      def f_show_label(self, _text):#2
+            self.label.setText(_text)
+            self.label.adjustSize()
+      #2
+
+      def retranslateUi(self, MainWindow):#2
+            _translate = QtCore.QCoreApplication.translate
+            MainWindow.setWindowTitle(_translate("MainWindow", "MainWindow"))
+            self.label.setText(_translate("MainWindow", "TextLabel"))
+            self.menufile.setTitle(_translate("MainWindow", "file"))
+            self.menuedit.setTitle(_translate("MainWindow", "edit"))
+
+            self.actionnew.setText(_translate("MainWindow", "&new"))
+            self.actionnew.setToolTip(_translate("MainWindow", "new file"))
+            self.actionnew.setStatusTip(_translate("MainWindow", "create a new file"))
+            self.actionnew.setShortcut(_translate("MainWindow", "Ctrl+N"))
+            self.actionsave.setText(_translate("MainWindow", "save"))
+
+            self.actionsave.setStatusTip(_translate("MainWindow", "saving a file"))
+            self.actionsave.setShortcut(_translate("MainWindow", "Ctrl+S"))
+            self.actioncopy.setText(_translate("MainWindow", "copy"))
+            self.actioncopy.setStatusTip(_translate("MainWindow", "copying a file"))
+            self.actioncopy.setShortcut(_translate("MainWindow", "Ctrl+C"))
+            self.actionpaste.setText(_translate("MainWindow", "paste"))
+            self.actionpaste.setStatusTip(_translate("MainWindow", "paste a file"))
+            self.actionpaste.setShortcut(_translate("MainWindow", "Ctrl+V"))
+      #2
+
+      def moveEvent(self, event):#2
+            global coun
+                  
+            print(f"L20 {coun= }, {event.pos().__repr__()= }\n{event.oldPos().x()= }\n")
+            coun+=1
+      #2
+
+      def f_show(self):#2
+            
+            self.main_windo.show()
+      #2
+#1
+if __name__ == "__main__":
+    import sys
+    app = QtWidgets.QApplication(sys.argv)
+   
+    ui = Ui_MainWindow(QtWidgets.QMainWindow())
+
+    ui.f_show()
+    sys.exit(app.exec_())
+
+
+
+
