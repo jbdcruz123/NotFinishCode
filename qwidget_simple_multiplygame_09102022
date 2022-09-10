@@ -1,0 +1,432 @@
+#!/usr/bin/env python3
+
+#for debuging see zTrash_Code.txt
+
+#simple multiply game
+from PyQt5.QtWidgets import QWidget, QApplication, QPushButton, QLabel, QLineEdit, QMessageBox
+from PyQt5.QtCore import QThread, pyqtSignal, Qt
+import sys
+import datetime
+import time
+import random
+
+#menu control
+class qthrea(QThread):#1
+
+      main_signa = pyqtSignal(str)
+      _stop = False
+      self_termi = False
+      start_emit = False
+      appli = None
+
+      statu = None
+      _ques = None
+      secon = 0
+      score = 0
+
+      #counter debuger
+      coun = 0
+      def run(self):#3
+            #L30            
+            
+            while self._stop != True:#4
+     
+                  print(f"L30 {self.coun= }\n")                     
+                  if self.start_emit == True :#5
+                        self.start_emit = False
+                  
+                        print(f"L31 \n")            
+
+                        if self.statu == "f_front":#2
+
+                            self.main_signa.emit("f_front")   
+                            
+                        elif self.statu == "f_game_proce" :#2.2
+                             
+                              self.main_signa.emit("edit_answe_setfocus")  
+                              self.f_game_proce()
+                              
+                        #2 
+           
+                  #5
+
+                  time.sleep(0.5)
+                  self.coun+=1
+            #4  
+
+            if self.self_termi == True: #5
+
+                  print(f"L32 \n")
+                  self.appli.quit()
+            #5
+            
+            print(f"L33 \n")                        
+      #3
+
+      def f_input_appli(self, appli):#2
+
+            self.appli = appli
+      #2
+
+      def f_input_acces(self, main_windo= None):#2
+            #L110
+
+            self.main_windo = main_windo
+      #2
+
+      def f_game_proce(self ):#2
+
+            #L20
+
+            print(f"L20 \n")
+            #initialize value quest
+            numbe = [2,3,4,5,6,7,8,9]
+            quest = [[0,0], [0,0], [0,0] ]                    
+                       
+            print(f"L21 {quest= }\n")
+           
+            i=0
+            while i < 3:#3
+
+                  quest[i][0] = random.choice(numbe)
+                  quest[i][1] = random.choice(numbe)
+                  
+                  i+=1            
+            #3
+           
+            print(f"L22 {quest= }\n")
+
+
+            self.main_signa.emit("initi_displ")
+
+            self.main_windo.timer_stop = False
+            while self.main_windo.timer_stop != True :#5
+                  #continue loop until user press
+                  pass
+            #5
+
+            i =0
+            while i < 3:#4
+
+                  _first = quest[i][0]
+                  secon = quest[i][1]
+                  chang_value = False
+
+                  #restart first dimension
+                  j=0
+                  while j < 3 :#7
+
+                        if i != j :#8
+                              
+                              if _first != quest[j][0] and  _first == quest[j][1] and secon == quest[j][0] and  secon != quest[j][1]  :#5    
+
+                                    quest[j][0] = random.choice(numbe)
+                                    quest[j][1] = random.choice(numbe) 
+                                    chang_value = True
+                                    break
+
+                              elif _first == quest[j][0] and  secon == quest[j][1]  :#5    
+                                
+                                    quest[j][0] = random.choice(numbe)
+                                    quest[j][1] = random.choice(numbe)
+                                    chang_value = True                         
+                                    break
+                              #5
+
+                        #8
+                        j+=1
+                  #7
+
+                  if chang_value == True:#8
+                        i= 0
+                        continue
+                  #8
+
+                  i+=1
+            #4
+
+            print(f"L23 {quest=}\n")            
+
+            self.score = 0
+            i=0
+            while i < 3:#5
+
+                  total = quest[i][0] * quest[i][1]  
+
+                  self.main_signa.emit("edit_answe")
+
+                  self._quest = quest[i][0]
+                  print(f"L24 {self._quest= }\n")      
+                  self.main_signa.emit("label_1")
+                  time.sleep(.1)
+                  self._quest = quest[i][1]    
+
+                  print(f"L24b {self._quest= }\n") 
+                  self.main_signa.emit("label_2")  
+                 
+                  minut = 3
+                  j = 0
+                  self.secon =j
+                  self.main_windo.playe_press_ok = False
+                  while True:#7             
+
+                        if self.main_windo.playe_press_ok == True:#9
+
+                              print(f"L25 {self.main_windo.playe_answe= }, {total= }\n") 
+                              if int(self.main_windo.playe_answe) ==  total: #2
+                        
+                                    self.score += 1 
+                                    print(f"L25_b {self.score = }\n") 
+                              #2 
+
+                              break
+                        #9
+
+                        if j == minut:#8
+
+                              self.main_signa.emit("label_time")
+
+                              time_out = True
+                              break
+                        #8
+
+                        self.main_signa.emit("label_time")
+
+                        time.sleep(1)
+                        j+= 1
+                        self.secon = j
+                  #7
+
+                  i+=1
+            #5
+
+            self.main_signa.emit("displ_score")
+
+      #2
+     
+#1
+
+class main_windo(QWidget):#1
+
+      def __init__(self):#2
+
+            super().__init__()
+
+            self.setup_ui()
+            
+            self.coun = 0
+            self.appli = None
+            self.timer_stop  = False
+            self.playe_press_ok = False
+            self.playe_answe = 0
+            
+      #2
+
+      def setup_ui(self):#3
+            self.setWindowTitle("mutlipy game")
+            self.setFixedSize(300,350)
+            self.move(250,150)
+
+            self.label_time = QLabel(self)
+            self.label_time.setText("timer")
+            self.label_time.move(90,30)
+
+            self.label_1 = QLabel(self)
+            self.label_1.setText("a")
+            self.label_1.move(150,50)
+
+            self.label_displ = QLabel(self)
+            self.label_displ.setText("*")
+            self.label_displ.move(150, 70)
+
+            self.label_2 = QLabel(self)
+            self.label_2.setText("b")
+            self.label_2.move(150, 90)
+
+            self.edit_answe = qline_edit(paren = self)
+            self.edit_answe.move (90, 110)
+
+            self.butto = QPushButton(self)
+            self.butto.setText("ok")
+            self.butto.move(90,140)
+            self.butto.clicked.connect(self.f_click_butto)
+            self.edit_answe.setFocus()
+      #3
+
+      def f_click_butto(self):#2
+            #L90 
+            self.playe_press_ok = True
+
+            self.playe_answe = self.edit_answe.text()
+
+            self.playe_answe  = self.f_check_int(self.playe_answe )
+            print(f"L91 {self.playe_answe= }\n")            
+
+      #2
+
+      def f_check_int(self, param):#2
+
+            try: #3
+
+                  return int(param)
+            except:#3
+                  
+                  return 0
+            #3
+      #2
+
+      def f_exec_timer(self, _qthrea):#2
+            #L130  
+
+            print(f"L130 \n")
+            self.qthrea = _qthrea
+            self.qthrea.f_input_acces(self)
+            self.qthrea.start_emit = True
+            self.qthrea.statu = "f_front"
+            self.qthrea.main_signa.connect(self.f_timer_start)            
+            self.qthrea.start()
+            
+      #2
+
+      #holds the timer for 3 sec count, limit player answer
+      def f_timer_start(self, param):#2
+            #L100
+            if param == "f_front":#3
+
+                  if not self.f_front() :#4
+
+                        print(f"L101 \n")
+                        self.qthrea._stop =True
+                        self.qthrea.wait()
+                        self.appli.quit()
+                        return 
+                  #4
+                  self.qthrea.statu= "f_game_proce"
+                  self.qthrea.start_emit = True
+          
+            elif param == "label_1":#3.3
+
+                  self.label_1.setText(str(self.qthrea._quest))
+                  self.label_1.adjustSize()
+            elif param == "label_2":#3.4
+
+                  self.label_2.setText(str(self.qthrea._quest))
+                  self.label_2.adjustSize()
+  
+            elif param == "displ_score":#3.4
+
+                  r = QMessageBox.information(self, "mensahe", f"Sa tatlong Question ay\n {self.qthrea.score} ang nasagot\ngusto mo bang ituloy Y/N", \
+                  QMessageBox.Yes |QMessageBox.No, QMessageBox.Yes)   
+                  
+                  if r == QMessageBox.No:#4
+
+                        self.qthrea._stop =True
+                        self.qthrea.wait()
+
+                        self.appli.quit()
+                        return
+                  #4
+                  self.qthrea.start_emit = True                 
+                  self.statu = "f_game_proce"
+            elif param == "initi_displ":#3.4
+
+                  QMessageBox.information(self, "mensahe", "Maghanda pag ka press Yes start na....", QMessageBox.Yes)  
+                  self.timer_stop = True
+                  self.edit_answe.setFocus()
+            elif param == "label_time":#3.4
+
+                  self.label_time.setText(f"count: {self.qthrea.secon}")
+                  self.label_time.adjustSize()
+            elif param == "edit_answe":#3.4
+
+                  self.edit_answe.setText("")               
+            elif param == "edit_answe_setfocus":#3.4
+
+                  print(f"L105 \n")
+                  self.edit_answe.setFocus() 
+            #3.4
+
+
+
+
+
+      #2
+      def f_time_recei(self, numbe):#3
+            #L40
+
+            #ung function members ng qwidget ang icacall dito
+            #separate function ng qthread para hindi mag crash sa call ng wait()
+            pass
+            
+     
+      #3
+
+      
+      def closeEvent(self, event):#2
+
+            self.qthrea._stop = True
+            self.qthrea.wait()            
+      #2
+      
+      def f_front(self):#2
+      
+            #L50
+            r = QMessageBox.information(self, "mensahe", "start ng game Y/ N \nyes to continue\n no to leave...", QMessageBox.Yes | QMessageBox.No,  QMessageBox.Yes)    
+                       
+            if r == QMessageBox.No :#3
+
+                  print(f"L51 \n")    
+                  self.qthrea._stop = True
+                  return False
+            #3
+
+            return True
+      #2
+
+class qline_edit(QLineEdit):#1
+
+      def __init__(self, _index = 0,_name = "qline_edit",  paren = None): #2
+
+            super().__init__(parent= paren)
+            self._index = _index
+            self._name = _name
+            self.main_windo = paren
+      #2
+
+     
+      def keyPressEvent(self, event):#3
+            #L10 
+
+            super().keyPressEvent(event)
+
+            print(f"L10 { event.key()= }\n")
+            if event.key() == Qt.Key_Return or event.key() == Qt.Key_Enter:#2
+                  print(f"L11 \n")
+                  self.main_windo.f_click_butto()
+            #2
+      #3      
+#1
+
+#L120 
+appli = QApplication(sys.argv)
+
+_main = main_windo()
+
+qthrea_main = qthrea()
+
+_main.appli = appli
+_main.show()
+
+qthrea_main.appli = appli
+qthrea_main.f_input_acces(main_windo = _main)
+_main.f_exec_timer(qthrea_main)
+
+appli.exec()
+
+sys.exit()
+
+
+
+
+
+
