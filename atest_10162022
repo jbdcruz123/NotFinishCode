@@ -1,0 +1,44 @@
+
+data = input(f"\n\nmangyaring mag input ng string:  ")
+
+ret =[]
+
+space = "none"
+v=""
+n = len(data)
+i=0
+
+while i < n:#2
+
+      inp = data[i]
+      #inp = not " "
+      if inp != " ":#2
+
+            if space == "start" and v != "":#2
+
+                  space = "none"
+                  ret.append(v)
+                  v=""
+            #2
+
+            v +=inp
+            i+=1
+            continue
+      #2
+
+      #.. inp " "
+      space = "start"
+      i+=1
+#2 
+
+if v != " ":#2
+
+      ret.append(v)
+#2
+
+print(f"{data=}\n")
+
+print(f"{ret=}\n")
+
+
+
