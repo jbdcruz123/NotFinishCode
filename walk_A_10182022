@@ -1,0 +1,230 @@
+"""
+walk 3d array created on py
+"""
+
+import random
+
+data = [  ]
+
+#initial value of data 2d
+def finitial( data ): #2
+      i = 0
+      while i < 10: #2
+      
+            data.append( [ ])
+            j=0
+            while j < 10: #2
+                              
+                  data[ i].append(".")
+                  j+=1
+                  
+           #2
+           
+            i+=1
+      #2
+      
+#2
+
+def fmain( ):#2
+      #L10 
+
+      #ascii code 65 A to 90 Z
+      # 0 up, 1 down, 2 left, 3 right = inp
+      #
+      # - up                
+      #row               - left  col  + rigth
+      # + down
+      #
+      #-1  left border  10 rigth border
+      #-1 up border      10 down bordet
+
+      finitial(data)
+      fdisplay(data)
+      
+      row = 0
+      col = 0
+      tail = 65 #inatras ko ng 1
+      block = [False,False,False,False ]
+      while True:#10
+            
+            inp = random.randint(0, 3)
+
+            if tail == 91:#7
+                  print("tapus na ang leters A to Z...")
+                  input("press any to leave....   ")
+                  return
+            #7
+
+            #check if all block
+            if fblock(block)== True:#7
+                  print("Naipit na sa leters or gilid ng edge ang character...")
+                  input("press any to leave....   ")
+                  break
+            #7
+
+            #0 = up -
+            if inp == 0 and block[inp] == False: #3
+
+                  #array
+                  if row -1 == -1: #4
+                        #sakop s border
+                        block[inp] = True 
+                        continue
+                  #4
+                  
+                  if data[ row -1 ][col ] =="." :#5
+                  
+                        data[ row -1 ][ col] = chr( tail)                         
+                        #restart block
+                        block = [False,False,False,False ]
+
+                        fdisplay(data)                                    
+                        tail+= 1
+                        row -=1
+                        
+                  else: #5
+
+                        block[inp] = True 
+                        continue
+                  #5
+                  
+            #3
+            
+            #0 = down +
+            if inp == 1 and block[inp] == False: #30
+
+                  #array
+                  if row +1 == 10: #34
+                        #sakop s border
+                        block[inp] = True 
+                        continue
+                  #34
+                  
+                  if data[ row +1 ][ col] =="." :#35
+                  
+                        data[ row +1 ][ col] = chr( tail)                         
+                        #restart block
+                        block = [False,False,False,False ]
+
+                        fdisplay(data)
+                        tail+= 1
+                        row +=1
+                        
+                  else: #35
+
+                        block[inp] = True 
+                        continue
+                  #35
+                  
+            #30
+
+            #2 = left -
+            if inp == 2 and block[inp]== False: #23
+
+                  #array
+                  if col -1 == -1: #24
+                        #sakop s border
+                        block[inp] = True 
+                        continue
+                  #24
+                  
+                  if data[ row ][ col-1] =="." :#25
+                  
+                        data[row ][ col-1] = chr( tail)                         
+                        #restart block
+                        block = [False,False,False,False ]
+                  
+                        fdisplay(data)
+                        tail+= 1
+                        col -=1
+                        
+                  else: #25
+
+                        block[inp] = True 
+                        continue
+                  #25
+                  
+            #23
+            
+            #3 = right +
+            if inp == 3 and block[inp] == False: #32
+
+                  #array
+                  if col +1 == 10: #42
+                        #sakop s border
+                        block[inp] = True 
+                        continue
+                  #42
+                  
+                  if data[row ][ col+1] =="." :#52
+                  
+                        data[ row ][ col+1] = chr( tail)                         
+                        #restart block
+                        block = [False,False,False,False ]
+                  
+                        fdisplay(data)
+                        tail+= 1
+                        col +=1
+                        
+                  else: #52
+
+                        block[inp] = True 
+                        continue
+                  #52
+                  
+            #32
+
+      #10
+
+     
+      #print( data )
+#2
+
+def fblock(block) :#2
+      #alamin kung true lahat ng value ng block      
+
+      n=4
+      i =0
+      while i < n :#3
+
+            if block[i ] == False:#4
+                  break
+            #4
+
+            i+=1
+      #3
+
+      if i == 4:#5
+            #it means lahat True
+            return True
+      #5
+
+      return False
+#2
+
+def fdisplay(data ):#2
+
+      n = len(data)
+      i=0
+      while i < n :#3
+
+            n_2 = len(data[i])
+            j = 0
+            while j < n_2 :#4
+
+                  print(data[i][j],end="")
+                  j+=1
+            #4
+            print("\n",end="")
+            i+=1
+      #3
+
+      print("\n\n\n",end="")
+#2
+
+fmain(  )
+
+
+             
+                                        
+                                                                  
