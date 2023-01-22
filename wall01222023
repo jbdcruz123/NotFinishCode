@@ -1,0 +1,266 @@
+
+
+//send to fb
+//https://en.cppreference.com/w/cpp/io/basic_ios/eof
+//https://www.geeksforgeeks.org/file-handling-c-classes/
+//https://cplusplus.com/reference/string/string/c_str/
+
+#include<iostream>
+#include<fstream>
+#include<string>
+#include<ctime>
+#include<string.h>
+#include<vector>
+
+/*
+void fdel_all(std::vector<std::string> *in){//2
+
+      in->size();
+}//2
+
+*/
+
+void fcstr_str(char *in, std::string *out){//2
+      //L30
+
+      //asume out is ""
+      auto i = 0;
+      auto n = strlen(in);
+      
+      while(i < (int) n ){//3
+
+            out->push_back( in[i] );
+            i+=1;
+      }//3
+
+      std::cout << "L35 out " << *out << ", in " << in << "\n";
+      getchar();  
+      
+}//2
+
+//mag salin ng array of string sa isang array of string din (value lang ang isasalin dito)
+void fset_str_arr(std::vector< std::string> *in, std::vector< std::string> *out){//2
+
+      int n = in->size();
+      auto i = 0;
+      while(i < n){//3
+
+            (*out)[i] = (*in)[i];
+
+            i+=1;
+      }//3
+
+
+
+}//2
+
+
+//kukuha ng isang slot, isasalin ang na sort sa # format
+void fset_data(std::string arr, std::vector<std::string> *out){//2
+      //L50
+      
+      
+      auto i = 0;
+      auto n = arr.size();
+      
+      std::string s="";
+      
+      while ( i < n ){//3
+            
+
+            if(arr[i] == '#'){//4
+
+                  (*out).push_back(s);
+                  s ="";
+                  i+=1;
+                  continue;
+            }//4
+            
+            s.push_back(arr[i]);
+            i+=1;
+      }//3
+
+  
+}//2
+
+//compare ang target data sa bawat slot nang database
+int fget_file(std::string target, std::fstream *file, std::vector<std::string> *add, std::vector<std::string> *les){//2
+      //L70
+
+
+      auto i = 0;
+      auto n_i = 3;//database is 3 row per data
+      int r =1;
+      std::vector< std::string > s_out;
+      std::vector< std::string > date;
+
+      std::string s="";
+      int find= 0;
+
+      while(true){//3
+            
+            i=0;
+            while(i < n_i){//4
+                  //get first the date
+                  r = std::getline(*file, s);
+
+                  std::cout << "L72 i " << i << ", n_i " << n_i ;
+
+                  if(r== false){//10
+
+                        break;
+                  }//10
+                  
+                  //process, paghiway hiwalayin ang #
+                  fset_data( s, &s_out );
+                  
+                  if( i == 0){//12
+
+                        //part of add
+                        fset_str_arr( &s_out, &date);
+
+                  }//12
+            
+            
+                  if( i == 1){//8
+                        //part of add
+                        fset_str_arr( &s_out, add);
+
+                  }//8
+
+                  if( i == 2){//8
+                        //part of les
+                        fset_str_arr( &s_out, les);
+
+                  }//8
+
+                  s_out = NULL;
+                 
+            }//4
+  
+
+            if( date[1] == target ){//5
+
+                  find = 1;
+                  break;                      
+                  
+                  
+            }//5
+
+                            
+            if(r== false){//11
+                  break;
+            }//11
+
+      }//3
+
+
+      return find;
+}//2
+
+void fdate_open(std::string str_now){//2
+      //L40
+
+      std::fstream file;
+ 
+
+      file.open("wall.txt", std::ios::in);
+
+      std::string s_out;
+      std::string s;
+      std::vector< std::string> res;
+
+      fget_file(str_now, &file, &add, &les);
+
+      
+      
+
+
+}//2
+
+void fdate_menu(){//2
+      //L20
+
+      time_t now = time(0);
+
+      char *s_now = ctime(&now);
+
+      std::string str_now;
+
+      tm *tm_now = localtime(&now);
+
+      fcstr_str(s_now, &str_now );
+      
+      std::string inp = "";
+      while(true){//3
+
+            std::cout << "\n\nb to back\nl lastest date\nr browse date\n";
+            std::cin >> inp;
+
+            if( toupper(inp[0]) == 'B'){//4
+
+                  return;
+            }//4 
+
+            if( toupper(inp[0]) == 'L'){//4
+
+                  str_now = std::to_string( tm_now->tm_mon ) + "/" + std::to_string( tm_now->tm_mday) + "/"+ std::to_string(tm_now->tm_year); 
+
+                  std::cout << "\n\nLatest: " << s_now  << "\n";
+
+                  std::cout << "\nL22 str_now " << str_now << "\n";                  
+                  
+                  //fdate_open(str_now);
+
+            }//4 
+
+
+            if( toupper(inp[0]) == 'R'){//4
+                  //browse 
+
+                  return;
+            }//4 
+
+
+      }//3
+
+
+}//2
+
+int main(){//2
+      //L10
+
+      std::cout << "\n\ntesting:  aa\n";
+            
+
+      std::string inp= "";
+
+      while(true){//2 
+
+            std::cout << "\n\nq to quit\nd date\n";
+
+            std::cin >> inp;
+
+            //std::cout << "\nL11 inp|" << inp << "| inp[0]|" << inp[0] << "|\n";
+
+            if(toupper( inp[0] )  == 'Q'){//3
+
+                  std::cout << "\n\nleaving the prog...";
+                  break;
+            }//3
+
+
+            if(toupper( inp[0])  == 'D' ){//4
+
+                  fdate_menu();
+            }//4
+
+
+
+      }//2
+
+     
+      std::cout << "\n\n";
+      return 0;
+}//2
+
