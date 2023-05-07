@@ -1,0 +1,447 @@
+#include <iostream>
+#include <string>
+#include <vector>
+#include <iomanip>
+ 
+using namespace std;
+
+void showMenu() ;
+void showMovies(  );
+void finitial_object(  );
+
+struct Movie {
+    int movie_number;  // id number ng movie
+    string movie_title;    // movie title
+    double amount;    //price ng movie
+    string show_date;
+    string show_time;
+};
+ 
+struct Ticket {
+    int ticket_number;  //id ng tiket
+    string movie_title;  //to trace movie title
+    int seat_number; //trace whre seat located
+    double amount; //amount na binayaran
+};
+ 
+ 
+struct Seat {
+      int movie_number; 
+      int seat_number;   //id number of seat
+      int status;    //x for reserve or occpied other vacant
+      int ticket_number; // ito ung xusotmer number na naka occupied
+};
+
+struct Sale {
+      double total_sale; //sale from begining to last
+      int quantity;     //total count of sale from begining to last
+      int last_ticket_use;  //record of last ticket use
+};
+
+//global main data
+vector<Movie> movie; 
+vector<Seat> seat;
+// initialize ticket list
+vector<Ticket> ticket;
+struct Sale sale;
+
+void fflush(  ){
+
+      char ch;
+      while( 1 ){
+
+            ch = getchar();
+            if( ch == 10 or ch == 13){
+                  break;
+            }
+      }
+}
+
+//find the movie number or movie title in movie data
+int ffind_movie_title( int pmovie_number= 0 , string pmovie_title = "" ){
+      //L90
+      
+      int nlen = movie.size(  ), iind=0;
+
+      if( pmovie_number != 0  ){
+
+            //return 0 fail, > 0 sucess this is the index
+            iind = 0;
+            while( iind < nlen ){
+
+                  if( pmovie_number == movie[iind].movie_number){
+                        
+                        return iind;
+                  }
+              
+                  iind+=1;
+            }
+
+      } else {
+
+            iind = 0;        
+            while( iind < nlen ){
+
+                  if( pmovie_title == movie[iind].movie_title ){
+                        
+                        return iind;
+                  }
+              
+                  iind+=1;
+            }
+      }
+
+
+      //did not found
+      return 0;
+}
+
+
+//find seat number in seat data
+int ffind_ticket( int pseat_number ){
+      //L80
+      
+      //return 0 fail, > 0 sucess this is the index
+      int nlen = seat.size(  ), iind=0;
+      while( iind < nlen ){
+
+            if( pseat_number == seat[iind].seat_number && seat[iind].status == 0){
+                  
+                  return iind;
+            }
+        
+            iind+=1;
+      }
+
+      //did not found
+      return 0;
+}
+
+void fshow_seats(  ){  
+      //L70  
+
+      int iind=0, nlen = seat.size(  ), movie_number, count=0;
+
+      if(  nlen <= 0){
+            //a blank database
+            cout << "\n\nno database in seat...";
+            getchar();
+            return;
+      }
+
+      movie_number = seat[0].movie_number; 
+
+      cout << "\n\nTitle " << seat[0].movie_number << "\n";
+
+      
+      while( iind < nlen ) {
+
+            if( seat[iind].movie_number != movie_number ){
+                  //restart of label
+                  movie_number = seat[iind].movie_number;
+      
+                  cout << "\n\nTitle " << seat[iind].movie_number << "\n";
+
+                  continue;
+            }
+       
+            //for each box showing x occupied not x is vacant
+            if( seat[iind].status == 0){
+
+                  cout << "[ " << (char) (96 +  seat[iind].movie_number) << " " << seat[iind].seat_number << " ] ";
+            
+            } else{
+                  //not 0
+                  cout << "[ " << (char) (96 +  seat[iind].movie_number) << " " <<  " X ] ";
+            
+            }
+
+
+            iind+=1;
+      }
+}
+
+
+
+void fpurchase_ticket(){
+      //L60 
+      string ch;
+
+      cout << "\n\nPURCHASE TICKET";
+      fshow_seats(  );
+      
+      //buy ticket
+
+      cout << "\n\npress 0 to cancel, Enter seat number: ";
+      cin >> ch;
+      fflush( );
+
+      //find in seat
+      int seat_index = ffind_ticket( stoi(ch) );
+       
+      if( seat_index == 0 ){
+
+            cout << "\n\ndid not found " << ch; 
+            return;
+      }
+
+      int movie_number = seat[seat_index].movie_number;
+
+      int movie_index = ffind_movie_title( movie_number );      
+
+      if( movie_index == 0 ){
+
+            cout << "\n\ndid not found in movie the seat " << ch; 
+            return;
+      }
+
+  
+      //save the new ticket
+      sale.last_ticket_use +=1;
+      
+      Ticket ticket_blank;
+
+      ticket_blank.ticket_number = sale.last_ticket_use; 
+      ticket_blank.movie_title = movie[movie_index].movie_title; 
+
+      ticket_blank.seat_number = seat[seat_index].seat_number; 
+
+      ticket_blank.amount = movie[movie_index].amount; 
+      
+      ticket.push_back( ticket_blank );
+
+      cout << "\n\nsucessfully save seat " << ch;
+      getchar();
+
+      cout << "\n\n";
+}
+
+
+void ftest( int pdisplay_type ){
+      //L50 
+      cout  << "\n\n\ntest database: \n";
+
+        if(  pdisplay_type == 1) {
+            //seat
+
+            cout  << "\n\nmovie: \n";
+            int iind = 0, nlen = movie.size( );
+
+            while( iind < nlen ){
+
+                  cout << "\nmovie_number " << movie[ iind ].movie_number;
+                  
+                  cout << "\nmovie_title " << movie[ iind ].movie_title;
+                  
+                  cout << "\nprice " << movie[ iind ].amount;
+                  
+                  cout << "\nshow date " << movie[ iind ].show_date << "\n\n";
+                  cout << "\nshow time " << movie[ iind ].show_time << "\n\n";
+                  iind+=1;
+            }
+
+      } else if(  pdisplay_type == 2) {
+            //ticket
+
+            cout  << "\n\nticket: \n";
+            int iind = 0, nlen = ticket.size( );
+
+            while( iind < nlen ){
+
+                  cout << "\nmovie_number " << ticket[ iind ].ticket_number;
+                  
+                  cout << "\nseat_number " << ticket[ iind ].movie_title;
+                  
+                  cout << "\nstatus " << ticket[ iind ].seat_number;
+                  
+                  cout << "\nticket_number " << ticket[ iind ].amount << "\n\n";
+                  iind+=1;
+            }
+
+      } else if(  pdisplay_type == 3) {
+            //seat
+
+            cout  << "\n\nseat: \n";
+            int iind = 0, nlen = seat.size( );
+
+            while( iind < nlen ){
+
+                  cout << "\nmovie_number " << seat[ iind ].movie_number;
+                  
+                  cout << "\nseat_number " << seat[ iind ].seat_number;
+                  
+                  cout << "\nstatus " << seat[ iind ].status;
+                  
+                  cout << "\nticket_number " << seat[ iind ].ticket_number << "\n\n";
+                  iind+=1;
+            }
+
+      }
+}
+
+
+
+
+
+// function to show menu options
+void showMenu() {
+      //L40
+
+      cout<< "\n\t||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||";
+      cout<< "\n\t|                                                                |";
+      cout<< "\n\t|                   CINEMO BOOKING TICKET                        |";
+      cout<< "\n\t|                                                                |";
+      cout <<"\n\t||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||\n";
+      cout << "\n\t A. SHOW MOVIES\n";
+      cout << "\n\t B. PURCHASE TICKET\n";
+      cout  << "\n\t C. CHECK SALES\n";
+      cout   << "\n\t D. EXIT\n";
+      cout<< "\n\t Enter your choice : ";
+
+}
+ 
+// function to show movie list
+void showMovies(  ) {
+      //L30 
+
+      cout << "\t\t\t**********MOVIE LIST**********\n\n";
+      cout << "No. \tMovie Name\t\tPrice \t\tShow Date \tShow Time\n";
+
+      for (int index_first = 0; index_first < movie.size(); index_first++) {
+            cout << index_first + 1 << ".      "<< setw(20) << left << movie[index_first].movie_title << " Php "  << setw(15) << left << setprecision(2)  << fixed << movie[index_first].amount 
+            << setw(15)<< movie[index_first].show_date << setw(15) << movie[index_first].show_time << endl;
+      }
+
+      cout << endl;
+
+}
+
+void finitial_object(  ){
+      //L20    
+       // initialize movie list
+
+      sale.total_sale = 0;
+      sale.quantity = 0;
+      sale.last_ticket_use = 0;
+
+      Movie movie1= {1,"Inception", 400, "2023-04-16", "8:00-10:00AM"};
+      Movie movie2= {2,"Goodfellas", 300,"2023-04-18", "7:30-8:50PM"};
+      Movie movie3= {3,"Blurred", 400,"2023-04-16", "8:00-10:00AM"};
+      Movie movie4= {4,"Titanic", 400,"2023-04-16", "8:00-10:00AM"};
+
+      movie.push_back(movie1);
+
+      Seat seat_blank;     
+      int iind = 0;
+
+      while( iind < 5 ) {
+ 
+            seat_blank.movie_number = 1;
+            seat_blank.seat_number = iind +1 +10;
+            seat_blank.status = 0;
+            seat_blank.ticket_number = 0;
+            seat.push_back( seat_blank );
+            iind+=1;
+      }
+
+      movie.push_back(movie2);
+      iind = 0;
+
+      while( iind < 5 ) {
+ 
+            seat_blank.movie_number = 2;
+            seat_blank.seat_number = iind +1 +20;
+            seat_blank.status = 0;
+            seat_blank.ticket_number = 0;
+            seat.push_back( seat_blank );
+            iind+=1;
+      }
+
+
+      movie.push_back(movie3);
+
+      iind = 0;
+
+      while( iind < 5 ) {
+ 
+            seat_blank.movie_number = 3;
+            seat_blank.seat_number = iind +1 +30;
+            seat_blank.status = 0;
+            seat_blank.ticket_number = 0;
+            seat.push_back( seat_blank );
+            iind+=1;
+      }
+
+
+      movie.push_back(movie4);
+      
+      iind = 0;
+
+      while( iind < 5 ) {
+ 
+            seat_blank.movie_number = 4;
+            seat_blank.seat_number = iind +1 +40;
+            seat_blank.status = 0;
+            seat_blank.ticket_number = 0;
+            seat.push_back( seat_blank );
+            iind+=1;
+      }
+
+      sale.total_sale =0;
+      sale.quantity = 0;
+
+      //ftest(3);
+
+      //cout << "\n\npause standby";
+      //getchar( );
+
+
+}       
+  
+ 
+int main() { 
+
+     //L10 
+ 
+       finitial_object(  );
+
+      char choice;
+      do {
+            showMenu();
+            cin >> choice;
+            fflush( );
+
+            switch (choice) {
+                  case 'A':
+                  case 'a':
+                        showMovies( );
+                        break;
+                  case 'B':
+                  case 'b':
+                        fpurchase_ticket();
+
+                        break;
+                  case 'C':
+                  case 'c':
+                        //checkSales(movies, tickets);
+
+                        cout << "\n\nchecksales";
+                        ftest( 2 );
+
+                        break;
+                  case 'D':
+                  case 'd':
+                        cout << "Thanks for using our program!\n";
+                        break;
+                  default:
+                        cout << "Invalid choice. Please try again.\n";
+                        break;
+            }
+
+            //cout << "\nL11 bef while(choice === choice " << choice;
+
+      } while (choice != 'D' and choice != 'd');
+       
+      return 0;
+       
+}
